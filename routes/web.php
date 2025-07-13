@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\SukuCadangController;
-
+use App\Http\Controllers\PesananPerbaikanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +33,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/suku-cadang', [SukuCadangController::class, 'index'])->name('suku-cadang.index');
     Route::get('/suku-cadang/create', [SukuCadangController::class, 'create'])->name('suku-cadang.create');
     Route::get('/suku-cadang/{id}/edit', [SukuCadangController::class, 'edit'])->name('suku-cadang.edit');
+
+    // Pesanan Perbaikan
+    Route::get('/pesanan', [PesananPerbaikanController::class, 'index'])->name('pesanan.index');
+    Route::get('/pesanan/create', [PesananPerbaikanController::class, 'create'])->name('pesanan.create');
+    Route::get('/pesanan/{id}/edit', [PesananPerbaikanController::class, 'edit'])->name('pesanan.edit');
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
