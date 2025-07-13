@@ -11,15 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transaksi', function (Blueprint $table) {
-            $table->string('id_struk', 5)->primary(); // VARCHAR(5) PK, tanpa auto increment
-            $table->string('id_pesanan', 5);
+        Schema::create('pesananperbaikan', function (Blueprint $table) {
+            $table->string('id_pesanan', 5)->primary();
             $table->string('id_pelanggan', 5);
-            $table->string('total_biaya', 7);
+            $table->string('id_teknisi', 5);
+            $table->date('tgl_order');
+            $table->string('status', 10);
+            $table->string('deskripsi', 50)->nullable();
+            $table->string('estimasi_biaya', 7);
+            $table->date('tgl_selesai');
             $table->timestamps();
 
-            $table->foreign('id_pesanan')->references('id_pesanan')->on('pesananperbaikan')->onDelete('cascade');
             $table->foreign('id_pelanggan')->references('id_pelanggan')->on('pelanggan')->onDelete('cascade');
+            $table->foreign('id_teknisi')->references('id_teknisi')->on('teknisi')->onDelete('cascade');
         });
 
     }
@@ -29,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transaksis');
+        Schema::dropIfExists('pesanan_perbaikan');
     }
 };
