@@ -46,7 +46,7 @@
                     </div>
                 </div>
                 <div class="flex space-x-3 self-end lg:self-auto">
-                    <a href="{{ route('pelanggan.edit', ['id' => 1]) }}" class="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 flex-shrink-0">Edit data</a>
+                    <a href="{{ route('pelanggan.edit', ['id' => 2]) }}" class="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 flex-shrink-0">Edit data</a>
                     <button class="px-5 py-2 text-sm font-medium text-red-600 border border-red-600 rounded-lg hover:bg-red-50 flex-shrink-0">Hapus data</button>
                 </div>
             </div>
@@ -63,7 +63,7 @@
                     </div>
                 </div>
                 <div class="flex space-x-3 self-end lg:self-auto">
-                    <a href="{{ route('pelanggan.edit', ['id' => 1]) }}" class="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 flex-shrink-0">Edit data</a>
+                    <a href="{{ route('pelanggan.edit', ['id' => 3]) }}" class="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 flex-shrink-0">Edit data</a>
                     <button class="px-5 py-2 text-sm font-medium text-red-600 border border-red-600 rounded-lg hover:bg-red-50 flex-shrink-0">Hapus data</button>
                 </div>
             </div>
