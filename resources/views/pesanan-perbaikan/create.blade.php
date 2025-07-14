@@ -100,6 +100,15 @@
                         </div>
                     </div>
 
+                    <div>
+                    <label for="status" class="block font-semibold text-gray-700">Status Pesanan</label>
+                    <select id="status" name="status" class="block w-full mt-1 bg-gray-100 border-transparent rounded-xl">
+                        <option value="Pending">Pending</option>
+                        <option value="Diproses">Diproses</option>
+                        <option value="Selesai">Selesai</option>
+                    </select>
+                </div>
+
                     {{-- SUBMIT BUTTON --}}
                     <div class="flex justify-end pt-4">
                         <button type="submit" class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">

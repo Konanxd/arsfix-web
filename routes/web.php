@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\SukuCadangController;
 use App\Http\Controllers\PesananPerbaikanController;
+use App\Http\Controllers\TransaksiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +39,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/pesanan', [PesananPerbaikanController::class, 'index'])->name('pesanan.index');
     Route::get('/pesanan/create', [PesananPerbaikanController::class, 'create'])->name('pesanan.create');
     Route::get('/pesanan/{id}/edit', [PesananPerbaikanController::class, 'edit'])->name('pesanan.edit');
+
+    // Transaksi
+    Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
+    Route::get('/transaksi/{id}/detail-transaksi', [TransaksiController::class, 'show'])->name('transaksi.detail');
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

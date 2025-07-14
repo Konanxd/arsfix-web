@@ -27,8 +27,8 @@
             Pesanan Perbaikan
         </a>
 
-        
-        <a href="#" class="flex items-center px-6 py-3 font-semibold text-gray-500 hover:bg-gray-100">
+        <a href="{{ route('transaksi.index') }}" 
+        class="flex items-center px-6 py-3 font-semibold {{ request()->routeIs('transaksi.*') ? 'text-white bg-blue-600' : 'text-gray-500 hover:bg-gray-100' }}">
             Transaksi
         </a>
     </nav>
