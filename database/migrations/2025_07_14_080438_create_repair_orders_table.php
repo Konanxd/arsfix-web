@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('repair_orders', function (Blueprint $table) {
-            $table->string('order_id', 5)->primary(); // manual ID string
+            $table->id('order_id', 5); // manual ID string
             $table->string('customers_id', 5);
             $table->string('technicians_id', 5)->nullable();
             $table->date('order_date');
@@ -22,9 +22,9 @@ return new class extends Migration
             $table->date('completion_date');
             $table->timestamps();
 
-            // Foreign keys
-            $table->foreign('customer_code')->references('customer_code')->on('customers')->onDelete('cascade');
-            $table->foreign('technician_code')->references('technician_code')->on('technicians')->onDelete('set null');
+            // // Foreign keys
+            // $table->foreign('customer_id')->references('customer_id')->on('customers')->onDelete('cascade');
+            // $table->foreign('technicians_id')->references('technicians_id')->on('technicians')->onDelete('set null');
 });
 
     }
