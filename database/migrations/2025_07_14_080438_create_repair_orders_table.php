@@ -22,11 +22,10 @@ return new class extends Migration
             $table->date('completion_date');
             $table->timestamps();
 
-            // Foreign keys
-            $table->foreign('customer_code')->references('customer_code')->on('customers')->onDelete('cascade');
-            $table->foreign('technician_code')->references('technician_code')->on('technicians')->onDelete('set null');
-});
-
+            // Foreign keys (disesuaikan dengan nama kolom yang benar)
+            $table->foreign('customers_id')->references('customers_id')->on('customers')->onDelete('cascade');
+            $table->foreign('technicians_id')->references('technicians_id')->on('technicians')->onDelete('set null');
+        });
     }
 
     /**
