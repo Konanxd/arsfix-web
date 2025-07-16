@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customers; // <-- Panggil model Customers Anda
+use App\Models\Customers;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -10,18 +10,17 @@ class CustomerController extends Controller
     public function index()
     {
         $customers = Customers::all();
-        return view('customers.index', compact('customers'));
+        return view('pelanggan.index', compact('customers'));
     }
 
     public function create()
     {
-        return view('customers.create');
+        return view('pelanggan.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'customers_id' => 'required|string|unique:customers',
             'name_customers' => 'required|string|max:50',
             'phone_number' => 'nullable|string|max:15',
             'handphone' => 'nullable|string|max:15',
@@ -29,13 +28,13 @@ class CustomerController extends Controller
 
         Customers::create($request->all());
 
-        return redirect()->route('customers.index')->with('success', 'Data customer berhasil ditambahkan.');
+        return redirect()->route('pelanggan.index')->with('success', 'Data customer berhasil ditambahkan.');
     }
 
     public function edit($id)
     {
         $customer = Customers::findOrFail($id);
-        return view('customers.edit', compact('customer'));
+        return view('pelanggan.edit', compact('customer'));
     }
 
     public function update(Request $request, $id)
@@ -61,3 +60,4 @@ class CustomerController extends Controller
         return redirect()->route('customers.index')->with('success', 'Data customer berhasil dihapus.');
     }
 }
+
