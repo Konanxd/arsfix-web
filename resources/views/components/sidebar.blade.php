@@ -2,7 +2,7 @@
 <aside class="w-64 flex-shrink-0 bg-white shadow-md flex flex-col h-full">
 
     <div class="h-16 flex items-center justify-between p-4 md:p-6">
-        <a href="{{ route('pelanggan.index') }}" class="text-3xl font-bold text-black">
+        <a href="{{ route('pesanan.index') }}" class="text-3xl font-bold text-black">
             Arsfix.
         </a>
         <button class="md:hidden" @click="sidebarOpen = false">
@@ -12,19 +12,19 @@
 
     {{-- Menu Navigasi --}}
     <nav class="flex-grow md:mt-6">
-        <a href="{{ route('pelanggan.index') }}" 
-        class="flex items-center px-6 py-3 font-semibold {{ request()->routeIs('pelanggan.*') ? 'text-white bg-blue-600' : 'text-gray-500 hover:bg-gray-100' }}">
-            Data Pelanggan
+        <a href="{{ route('pesanan.index') }}" 
+        class="flex items-center px-6 py-3 font-semibold {{ request()->routeIs('pesanan.*') ? 'text-white bg-blue-600' : 'text-gray-500 hover:bg-gray-100' }}">
+            Pesanan Perbaikan
         </a>
-        
+
         <a href="{{ route('suku-cadang.index') }}" 
         class="flex items-center px-6 py-3 font-semibold {{ request()->routeIs('suku-cadang.*') ? 'text-white bg-blue-600' : 'text-gray-500 hover:bg-gray-100' }}">
             Data Suku Cadang
         </a>
-        
-        <a href="{{ route('pesanan.index') }}" 
-        class="flex items-center px-6 py-3 font-semibold {{ request()->routeIs('pesanan.*') ? 'text-white bg-blue-600' : 'text-gray-500 hover:bg-gray-100' }}">
-            Pesanan Perbaikan
+
+        <a href="{{ route('pelanggan.index') }}" 
+        class="flex items-center px-6 py-3 font-semibold {{ request()->routeIs('pelanggan.*') ? 'text-white bg-blue-600' : 'text-gray-500 hover:bg-gray-100' }}">
+            Data Pelanggan
         </a>
 
         <a href="{{ route('transaksi.index') }}" 

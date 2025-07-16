@@ -29,4 +29,8 @@ class PesananPerbaikanController extends Controller
     {
         return view('pesanan-perbaikan.edit');
     }
+    public function show($id)
+    {
+        return view('pesanan-perbaikan.show');
+    }
 }

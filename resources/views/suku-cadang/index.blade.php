@@ -17,7 +17,7 @@
             {{-- Loop untuk menampilkan data. --}}
             @for ($i = 0; $i < 8; $i++)
             {{-- CARD SUKU CADANG DENGAN TOMBOL EDIT & DELETE --}}
-            <div class="bg-white rounded-lg border border-gray-100 p-4 text-center hover:shadow-lg transition-shadow duration-300 flex flex-col">
+            <div class="bg-white rounded-lg border border-gray-100 p-4 text-left hover:shadow-lg transition-shadow duration-300 flex flex-col">
                 {{-- Konten utama card --}}
                 <div class="flex-grow">
                     <div class="bg-gray-50 rounded-md p-4">
@@ -26,6 +26,10 @@
                     <div class="mt-4">
                         <p class="text-xs font-semibold text-gray-500">RC14PM</p>
                         <p class="mt-1 font-semibold text-gray-800">Rear Camera - iPhone 14 Promax</p>
+                    </div>
+                    <div class="mt-2 text-left text-sm text-gray-600">
+                        <p>Harga: <span class="font-semibold text-gray-800">Rp 450.000</span></p>
+                        <p>Stok: <span class="font-semibold text-gray-800">12 unit</span></p>
                     </div>
                 </div>
 

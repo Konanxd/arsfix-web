@@ -20,7 +20,7 @@ use App\Http\Controllers\TransaksiController;
 
 Route::get('/', function () {
     // Arahkan ke halaman login atau langsung ke daftar pelanggan jika sudah login
-    return auth()->check() ? redirect()->route('pelanggan.index') : redirect()->route('login');
+    return auth()->check() ? redirect()->route('pesanan.index') : redirect()->route('login');
 });
 
 Route::middleware('auth')->group(function () {
@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/pesanan', [PesananPerbaikanController::class, 'index'])->name('pesanan.index');
     Route::get('/pesanan/create', [PesananPerbaikanController::class, 'create'])->name('pesanan.create');
     Route::get('/pesanan/{id}/edit', [PesananPerbaikanController::class, 'edit'])->name('pesanan.edit');
+    Route::get('/pesanan/{id}/show', [PesananPerbaikanController::class, 'show'])->name('pesanan.show');
 
     // Transaksi
     Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');

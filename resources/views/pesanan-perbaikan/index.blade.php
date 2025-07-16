@@ -14,13 +14,11 @@
         {{-- DAFTAR PESANAN --}}
         <div class="mt-6 space-y-4">
 
-            {{-- Data Dummy 1 --}}
-            <div class="bg-white p-4 rounded-lg shadow-md flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-                <div class="flex items-center">
+            {{-- Data Dummy --}}
+            <div class="bg-white p-4 rounded-lg shadow-md flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                <a href="{{ route('pesanan.show', ['id' => 1]) }}" class="flex items-center flex-1">
                     <div class="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center mr-4">
-                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6h13M9 11l4-4m0 0l4 4m-4-4v12" />
-                        </svg>
+                        <svg class="text-gray-300" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 1024 1024"><path fill="currentColor" d="M192 128v768h640V128zm-32-64h704a32 32 0 0 1 32 32v832a32 32 0 0 1-32 32H160a32 32 0 0 1-32-32V96a32 32 0 0 1 32-32m160 448h384v64H320zm0-192h192v64H320zm0 384h384v64H320z"/></svg>
                     </div>
                     <div>
                         <p class="font-bold text-gray-500">#OR0001</p>
@@ -28,16 +26,20 @@
                         <p class="text-sm text-gray-600">+62 812 3456 7890 | Huawei Nova 5T</p>
                         <div class="flex items-center space-x-2 mt-1">
                             <p class="text-sm text-gray-500">01/07/24</p>
-                            <span class="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-600">Diproses</span>
                         </div>
                     </div>
-                </div>
-                <div class="flex space-x-3 self-end lg:self-auto">
-                    <a href="{{ route('pesanan.edit', ['id' => 1]) }}" class="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 flex-shrink-0">
+                </a>
+
+                {{-- Aksi tombol --}}
+                <div class="flex space-x-3 mt-4 lg:mt-0">
+                    <a href="{{ route('pesanan.edit', ['id' => 1]) }}" class="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">
                         Edit data
                     </a>
-                    <button class="px-5 py-2 text-sm font-medium text-red-600 border border-red-600 rounded-lg hover:bg-red-50 flex-shrink-0">
-                        Hapus data
+                    <button class="px-5 py-2 text-sm font-medium text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50">
+                        Selesai
+                    </button>
+                    <button class="px-5 py-2 text-sm font-medium text-red-600 border border-red-600 rounded-lg hover:bg-red-50">
+                        Batal
                     </button>
                 </div>
             </div>
