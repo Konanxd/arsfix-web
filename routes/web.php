@@ -38,16 +38,27 @@ Route::middleware('auth')->group(function () {
     Route::get('/pelanggan/create', [PelangganController::class, 'create'])->name('pelanggan.create');
     Route::get('/pelanggan/{id}/edit', [PelangganController::class, 'edit'])->name('pelanggan.edit');
     
-    // Suku Cadang
     Route::get('/suku-cadang', [SukuCadangController::class, 'index'])->name('suku-cadang.index');
     Route::get('/suku-cadang/create', [SukuCadangController::class, 'create'])->name('suku-cadang.create');
     Route::get('/suku-cadang/{id}/edit', [SukuCadangController::class, 'edit'])->name('suku-cadang.edit');
+    Route::post('/suku-cadang/create', [SukuCadangController::class, 'store'])->name('suku-cadang.store');
+    Route::put('/suku-cadang/{id}', [SukuCadangController::class, 'update'])->name('suku-cadang.update');
+    Route::delete('/suku-cadang/{id}', [SukuCadangController::class, 'destroy'])->name('suku-cadang.destroy');
+
+
 
     // Pesanan Perbaikan
     Route::get('/pesanan', [PesananPerbaikanController::class, 'index'])->name('pesanan.index');
     Route::get('/pesanan/create', [PesananPerbaikanController::class, 'create'])->name('pesanan.create');
     Route::get('/pesanan/{id}/edit', [PesananPerbaikanController::class, 'edit'])->name('pesanan.edit');
     Route::get('/pesanan/{id}/show', [PesananPerbaikanController::class, 'show'])->name('pesanan.show');
+    Route::post('/pesanan', [PesananPerbaikanController::class, 'store'])->name('pesanan.store');
+    Route::put('/pesanan/{id}', [PesananPerbaikanController::class, 'update'])->name('pesanan.update');
+    Route::delete('/pesanan/{id}', [PesananPerbaikanController::class, 'destroy'])->name('pesanan.destroy');
+    Route::get('/pesanan/search', [PesananPerbaikanController::class, 'search'])->name('pesanan.search');
+
+
+
 
     // Transaksi
     Route::prefix('transaksi')->group(function () {

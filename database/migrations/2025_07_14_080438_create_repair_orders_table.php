@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Customers;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,14 +13,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('repair_orders', function (Blueprint $table) {
-            $table->string('order_id', 5)->primary(); // manual ID string
-            $table->string('customers_id', 5);
-            $table->string('technicians_id', 5)->nullable();
+            $table->id(); // manual ID string
+            $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
+            $table->foreignId('technician_id')->constrained('technicians')->onDelete('cascade');
+            $table->foreignId('sparepart_id')->constrained('spare_parts')->onDelete('cascade');
             $table->date('order_date');
-            $table->string('status', 10);
-            $table->string('description', 50)->nullable();
-            $table->decimal('estimated_cost', 10, 2);
-            $table->date('completion_date');
+            $table->enum('status',['Dalam Proses', 'Selesai', 'Batal']);
+            $table->longText('description');
+            $table->integer('estimated_cost');
             $table->timestamps();
 
             // // Foreign keys (disesuaikan dengan nama kolom yang benar)

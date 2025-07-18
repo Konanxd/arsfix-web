@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('spare_parts', function (Blueprint $table) {
-            $table->string('parts_id', 5)->primary();  // manual PK string
-            $table->string('name_parts', 50);
+            $table->id();  // manual PK string
+            $table->string('name', 50);
             $table->decimal('price', 10, 2); // ganti varchar jadi decimal
             $table->integer('stock');
             $table->timestamps();

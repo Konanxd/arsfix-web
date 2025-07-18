@@ -20,29 +20,32 @@
             <form action="#" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="space-y-6">
-                    
-                    <div>
-                        <x-input-label for="id_sukucadang" value="ID Suku Cadang" />
-                        <x-text-input id="id_sukucadang" class="block mt-1 w-full rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" type="text" name="id_sukucadang" :value="old('id_sukucadang')" required placeholder="Masukan id suku cadang" />
-                    </div>
-
                     <div>
                         <x-input-label for="nama_sukucadang" value="Nama Suku Cadang" />
-                        <x-text-input id="nama_sukucadang" class="block mt-1 w-full rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" type="text" name="nama_sukucadang" :value="old('nama_sukucadang')" required placeholder="Masukan nama pelanggan" />
+                        <x-text-input id="nama_sukucadang" class="block mt-1 w-full rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" type="text" name="name" :value="old('name')" required placeholder="Masukan suku cadang" />
+                        @error('name')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div>
                         <x-input-label for="stok" value="Stok" />
-                        <x-text-input id="stok" class="block mt-1 w-full rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" type="number" name="stok" value="0" min="0" required />
+                        <x-text-input id="stok" class="block mt-1 w-full rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" type="number" name="stock" value="0" min="0" required />
+                        @error('stock')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>>
+                        @enderror
                     </div>
 
                     <div>
                         <x-input-label for="harga" value="Harga Satuan" />
                         <div class="flex mt-1">
                             <span class="inline-flex items-center px-4 rounded-l-xl border border-r-0 border-transparent bg-gray-100 text-gray-500 sm:text-sm">Rp.</span>
-                            <input type="number" name="harga" id="harga" placeholder="0"
+                            <input type="number" name="price" id="harga" placeholder="0"
                                    class="block w-full rounded-r-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400">
                         </div>
+                        @error('price')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div x-data="{ fileName: '' }">
