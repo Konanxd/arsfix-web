@@ -1,35 +1,30 @@
 <?php
 
+// app/Models/Transaction.php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
-    use HasFactory;
-
     protected $table = 'transactions';
-    protected $primaryKey = 'receipt_id';
+    protected $primaryKey = 'receipt_id'; // contoh primary key
     public $incrementing = false;
     protected $keyType = 'string';
 
     protected $fillable = [
         'receipt_id',
-        'order_id',
-        'customer_id',
-        'total_cost',
+        'repair_order_id',
+        'customers_id',
+        'total_price',
+        'created_at',
     ];
 
-    // Relasi ke model Order
-    public function order()
-    {
-        return $this->belongsTo(RepairOrder::class, 'order_id', 'id_pesanan');
+    public function repairOrder() {
+        return $this->belongsTo(RepairOrder::class, 'repair_order_id');
     }
 
-    // Relasi ke model Customer
-    public function customer()
-    {
-        return $this->belongsTo(Customers::class, 'customer_id', 'id_pelanggan');
+    public function customer() {
+        return $this->belongsTo(Customers::class, 'customers_id');
     }
 }

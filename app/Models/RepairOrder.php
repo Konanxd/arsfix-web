@@ -27,9 +27,9 @@ class RepairOrder extends Model
 
     // Relasi ke Customer
     public function customer()
-    {
-        return $this->belongsTo(Customers::class, 'customers_id', 'customer_code');
-    }
+{
+    return $this->belongsTo(Customers::class, 'customers_id', 'customers_id');
+}
 
     // Relasi ke Technician
     public function technician()

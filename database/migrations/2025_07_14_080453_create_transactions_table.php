@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('customers_id', 5);
             $table->string('total_cost', 7)->nullable(false);
 
-            // // Relasi foreign key
-            // $table->foreign('order_id')->references('order_id')->on('repair_orders')->onDelete('cascade');
-            // $table->foreign('customers_id')->references('customers_id')->on('customers')->onDelete('cascade');
+            // Relasi foreign key
+            $table->foreign('order_id')->references('order_id')->on('repair_orders')->onDelete('cascade');
+            $table->foreign('customers_id')->references('customers_id')->on('customers')->onDelete('cascade');
         });
     }
 

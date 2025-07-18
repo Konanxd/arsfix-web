@@ -8,6 +8,7 @@ use App\Http\Controllers\SukuCadangController;
 use App\Http\Controllers\PesananPerbaikanController;
 use App\Http\Controllers\TransaksiController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -49,8 +50,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/pesanan/{id}/show', [PesananPerbaikanController::class, 'show'])->name('pesanan.show');
 
     // Transaksi
-    Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
-    Route::get('/transaksi/{id}/detail-transaksi', [TransaksiController::class, 'show'])->name('transaksi.detail');
+    Route::prefix('transaksi')->group(function () {
+    Route::get('/', [TransaksiController::class, 'index'])->name('transaksi.index');
+    Route::get('/create', [TransaksiController::class, 'create'])->name('transaksi.create');
+    Route::get('/transaksi/create', [TransaksiController::class, 'create'])->name('transaksi.create');
+    Route::post('/store', [TransaksiController::class, 'store'])->name('transaksi.store');
+    Route::get('/{id}', [TransaksiController::class, 'show'])->name('transaksi.show');
+    Route::get('/{id}/edit', [TransaksiController::class, 'edit'])->name('transaksi.edit');
+    Route::put('/{id}', [TransaksiController::class, 'update'])->name('transaksi.update');
+    Route::delete('/{id}', [TransaksiController::class, 'destroy'])->name('transaksi.destroy');
+});
+
+
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
