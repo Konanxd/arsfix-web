@@ -9,9 +9,9 @@ class SparePart extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'parts_id';
+    protected $primaryKey = 'id';
 
     protected $keyType = 'string';
 
-    protected $fillable = ['parts_id', 'name_parts', 'price', 'stock'];
+    protected $fillable = ['id', 'name', 'price', 'stock'];
 }

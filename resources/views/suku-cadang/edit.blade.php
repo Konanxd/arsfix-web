@@ -17,20 +17,20 @@
 
         {{-- FORM CARD --}}
         <div class="mt-8 bg-white p-8 rounded-lg shadow-md">
-            <form action="{{ route('suku-cadang.update', $sukuCadang->parts_id) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('suku-cadang.update', $sukuCadang->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
             <div>
-                <x-input-label for="name_parts" value="Nama Suku Cadang" />
+                <x-input-label for="name" value="Nama Suku Cadang" />
                 <x-text-input 
-                    id="name_parts" 
+                    id="name" 
                     class="block mt-1 w-full rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" 
                     type="text" 
-                    name="name_parts" 
-                    value="{{ old('name_parts', $sukuCadang->name_parts) }}" 
+                    name="name" 
+                    value="{{ old('name', $sukuCadang->name) }}" 
                     required />
-                @error('name_parts')
+                @error('name')
                     <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                 @enderror
             </div>

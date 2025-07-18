@@ -9,8 +9,8 @@ class Technician extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'technicians_id';
+    protected $primaryKey = 'id';
     protected $keyType = 'string';
 
-    protected $fillable = ['technicians_id', 'name_technicians', 'login_data'];
+    protected $fillable = ['id', 'name', 'login_data'];
 }

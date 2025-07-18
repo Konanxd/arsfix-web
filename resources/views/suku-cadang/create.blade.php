@@ -22,8 +22,8 @@
                 <div class="space-y-6">
                     <div>
                         <x-input-label for="nama_sukucadang" value="Nama Suku Cadang" />
-                        <x-text-input id="nama_sukucadang" class="block mt-1 w-full rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" type="text" name="name_parts" :value="old('name_parts')" required placeholder="Masukan suku cadang" />
-                        @error('name_parts')
+                        <x-text-input id="nama_sukucadang" class="block mt-1 w-full rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" type="text" name="name" :value="old('name')" required placeholder="Masukan suku cadang" />
+                        @error('name')
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                         @enderror
                     </div>

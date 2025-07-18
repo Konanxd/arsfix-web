@@ -14,8 +14,8 @@ class SukuCadangController extends Controller
         // Implementasi pencarian (Mencari Data Suku Cadang)
         if ($request->has('search')) {
             $searchTerm = $request->input('search');
-            $query->where('name_parts', 'like', '%' . $searchTerm . '%')
-                ->orWhere('parts_id', 'like', '%' . $searchTerm . '%');
+            $query->where('name', 'like', '%' . $searchTerm . '%')
+                ->orWhere('id', 'like', '%' . $searchTerm . '%');
         }
 
         $sukuCadang = $query->paginate(10); // Sesuaikan jumlah item per halaman
@@ -34,7 +34,7 @@ class SukuCadangController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name_parts' => 'required|string|max:50', // Sesuaikan dengan 'name_parts' dan panjang 50
+            'name' => 'required|string|max:50', // Sesuaikan dengan 'name' dan panjang 50
             'price' => 'required|numeric|min:0', // Sesuaikan dengan 'price'
             'stock' => 'required|integer|min:0', // Sesuaikan dengan 'stock'
         ]);
@@ -60,7 +60,7 @@ class SukuCadangController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name_parts' => 'required|string|max:50',
+            'name' => 'required|string|max:50',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
         ]);

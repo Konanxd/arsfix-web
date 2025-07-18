@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('technicians', function (Blueprint $table) {
-            $table->id('technicians_id', 5); // manual ID, bukan auto-increment
-            $table->string('name_technicians', 50);
+            $table->id(); // manual ID, bukan auto-increment
+            $table->string('name', 50);
             $table->string('login_data', 7)->nullable(); 
             $table->timestamps();
         });

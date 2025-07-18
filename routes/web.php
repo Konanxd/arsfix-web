@@ -44,6 +44,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/pesanan/create', [PesananPerbaikanController::class, 'create'])->name('pesanan.create');
     Route::get('/pesanan/{id}/edit', [PesananPerbaikanController::class, 'edit'])->name('pesanan.edit');
     Route::get('/pesanan/{id}/show', [PesananPerbaikanController::class, 'show'])->name('pesanan.show');
+    Route::post('/pesanan', [PesananPerbaikanController::class, 'store'])->name('pesanan.store');
+    Route::put('/pesanan/{id}', [PesananPerbaikanController::class, 'update'])->name('pesanan.update');
+    Route::delete('/pesanan/{id}', [PesananPerbaikanController::class, 'destroy'])->name('pesanan.destroy');
+    Route::get('/pesanan/search', [PesananPerbaikanController::class, 'search'])->name('pesanan.search');
+
+
+
 
     // Transaksi
     Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');

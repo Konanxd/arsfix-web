@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('repair_id')->constrained('repair_orders')->onDelete('cascade');
+            $table->integer('total_payment');
             $table->timestamps();
         });
     }

@@ -23,7 +23,7 @@
                                 alt="Suku Cadang" class="w-full h-28 object-contain mx-auto">
                         </div>
                         <div class="mt-4">
-                            <p class="mt-1 font-semibold text-gray-800">{{ $item->name_parts }}</p>
+                            <p class="mt-1 font-semibold text-gray-800">{{ $item->name }}</p>
                         </div>
                         <div class="mt-2 text-left text-sm text-gray-600">
                             <p>Harga: <span class="font-semibold text-gray-800">Rp {{ number_format($item->price, 0, ',', '.') }}</span></p>
@@ -32,11 +32,11 @@
                     </div>
 
                     <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-center space-x-3">
-                        <a href="{{ route('suku-cadang.edit', ['id' => $item->parts_id]) }}" class="px-4 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <a href="{{ route('suku-cadang.edit', ['id' => $item->id]) }}" class="px-4 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                             Edit
                         </a>
                         
-                        <form action="{{ route('suku-cadang.destroy', $item->parts_id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                        <form action="{{ route('suku-cadang.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="px-4 py-1.5 text-xs font-medium text-red-600 border border-red-600 rounded-md hover:bg-red-50">
