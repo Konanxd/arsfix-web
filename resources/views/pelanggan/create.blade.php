@@ -25,9 +25,9 @@
 
                     {{-- Nama --}}
                     <div>
-                        <x-input-label for="name_customers" value="Nama Customer" />
-                        <x-text-input id="name_customers" class="block mt-1 w-full rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" type="text" name="name_customers" value="{{ old('name_customers') }}" required placeholder="Masukan nama customer" />
-                        <x-input-error :messages="$errors->get('name_customers')" class="mt-2" />
+                        <x-input-label for="name" value="Nama Customer" />
+                        <x-text-input id="name" class="block mt-1 w-full rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" type="text" name="name" value="{{ old('name') }}" required placeholder="Masukan nama customer" />
+                        <x-input-error :messages="$errors->get('name')" class="mt-2" />
                     </div>
 
                     {{-- Nomor Telepon --}}

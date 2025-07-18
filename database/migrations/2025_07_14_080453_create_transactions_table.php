@@ -12,14 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transactions', function (Blueprint $table) {
-            $table->string('receipt_id', 5)->primary();
-            $table->string('order_id', 5);
-            $table->string('customers_id', 5);
-            $table->string('total_cost', 7)->nullable(false);
-
-            // Relasi foreign key
-            $table->foreign('order_id')->references('order_id')->on('repair_orders')->onDelete('cascade');
-            $table->foreign('customers_id')->references('customers_id')->on('customers')->onDelete('cascade');
+            $table->id();
+            $table->foreignId('repair_id')->constrained('repair_orders')->onDelete('cascade');
+            $table->integer('total_payment');
+            $table->timestamps();
         });
     }
 

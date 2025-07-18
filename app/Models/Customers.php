@@ -10,13 +10,12 @@ class Customers extends Model
     use HasFactory;
 
     protected $table = 'customers';
-    protected $primaryKey = 'customers_id';
     public $incrementing = false;
     protected $keyType = 'string';
 
     protected $fillable = [
-        'customers_id',
-        'name_customers',
+        'id',
+        'name',
         'phone_number',
         'handphone',
     ];
@@ -24,7 +23,7 @@ class Customers extends Model
     // Relasi ke repair orders
     public function repairOrders()
     {
-        return $this->hasMany(RepairOrder::class, 'customers_id', 'customers_id');
+        return $this->hasMany(RepairOrder::class, 'id', 'id');
     }
 }
 

@@ -26,22 +26,22 @@
 
         {{-- FORM CARD --}}
         <div class="mt-8 bg-white p-8 rounded-lg shadow-md">
-            <form method="POST" action="{{ route('customers.update', $customer->customers_id) }}">
+            <form method="POST" action="{{ route('customers.update', $customer->id) }}">
                 @csrf
                 @method('PUT')
                 <div class="space-y-6">
                     <div>
-                        <x-input-label for="customers_id" value="ID Pelanggan" />
-                        <x-text-input id="customers_id" class="block mt-1 w-full rounded-xl bg-gray-200 border-transparent"
-                                      type="text" name="customers_id" value="{{ $customer->customers_id }}" disabled />
+                        <x-input-label for="id" value="ID Pelanggan" />
+                        <x-text-input id="id" class="block mt-1 w-full rounded-xl bg-gray-200 border-transparent"
+                                      type="text" name="id" value="{{ $customer->id }}" disabled />
                     </div>
 
                     <div>
-                        <x-input-label for="name_customers" value="Nama Pelanggan" />
-                        <x-text-input id="name_customers"
+                        <x-input-label for="name" value="Nama Pelanggan" />
+                        <x-text-input id="name"
                                       class="block mt-1 w-full rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500"
-                                      type="text" name="name_customers" value="{{ old('name_customers', $customer->name_customers) }}" required />
-                        <x-input-error :messages="$errors->get('name_customers')" class="mt-2" />
+                                      type="text" name="name" value="{{ old('name', $customer->name) }}" required />
+                        <x-input-error :messages="$errors->get('name')" class="mt-2" />
                     </div>
 
                     <div>

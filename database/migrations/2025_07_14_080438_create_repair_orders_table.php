@@ -1,15 +1,11 @@
 <?php
 
-use App\Models\Customers;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('repair_orders', function (Blueprint $table) {
@@ -23,15 +19,12 @@ return new class extends Migration
             $table->integer('estimated_cost');
             $table->timestamps();
 
-            // // Foreign keys (disesuaikan dengan nama kolom yang benar)
-            // $table->foreign('customers_id')->references('customers_id')->on('customers')->onDelete('cascade');
+            // // Foreign keys
+            // $table->foreign('customer_id')->references('customer_id')->on('customers')->onDelete('cascade');
             // $table->foreign('technicians_id')->references('technicians_id')->on('technicians')->onDelete('set null');
-        });
+});
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('repair_orders');

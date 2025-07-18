@@ -24,17 +24,17 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="font-bold text-gray-500">#{{ $customer->customers_id }}</p>
-                    <p class="text-lg font-semibold text-gray-800">{{ $customer->name_customers }}</p>
+                    <p class="font-bold text-gray-500">#{{ $customer->id }}</p>
+                    <p class="text-lg font-semibold text-gray-800">{{ $customer->name }}</p>
                     <p class="text-sm text-gray-600">+62 {{ $customer->phone_number }} | {{ $customer->handphone }}</p>
                 </div>
             </div>
             <div class="flex space-x-3 self-end lg:self-auto">
-                <a href="{{ route('pelanggan.edit', ['id' => $customer->customers_id]) }}"
+                <a href="{{ route('pelanggan.edit', ['id' => $customer->id]) }}"
                    class="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 flex-shrink-0">
                     Edit data
                 </a>
-                <form action="{{ route('customers.destroy', $customer->customers_id) }}" method="POST" onsubmit="return confirm('Yakin ingin hapus?')">
+                <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" onsubmit="return confirm('Yakin ingin hapus?')">
                     @csrf
                     @method('DELETE')
                     <button type="submit"
