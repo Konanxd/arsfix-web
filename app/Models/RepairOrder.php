@@ -10,30 +10,36 @@ class RepairOrder extends Model
     use HasFactory;
 
     protected $table = 'repair_orders';
-    protected $primaryKey = 'order_id';
-    public $incrementing = false;
-    protected $keyType = 'string';
+    protected $primaryKey = 'id';
+    public $incrementing = true;
+
 
     protected $fillable = [
-        'order_id',
-        'customers_id',
-        'technicians_id',
+        'id',
+        'customer_id',
+        'technician_id',
+        'sparepart_id',
         'order_date',
         'status',
         'description',
         'estimated_cost',
-        'completion_date',
+        'jumlah',
     ];
 
-    // Relasi ke Customer
     public function customer()
-{
-    return $this->belongsTo(Customers::class, 'customers_id', 'customers_id');
-}
+    {
+        return $this->belongsTo(Customers::class);
+    }
 
-    // Relasi ke Technician
     public function technician()
     {
-        return $this->belongsTo(Technician::class, 'technicians_id', 'technician_code');
+        return $this->belongsTo(User::class, 'technician_id');
     }
+
+    public function sparePart()
+    {
+        return $this->belongsTo(SparePart::class, 'sparepart_id');
+    }
+
+
 }
