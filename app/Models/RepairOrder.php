@@ -27,9 +27,10 @@ class RepairOrder extends Model
     ];
 
     public function customer()
-    {
-        return $this->belongsTo(Customers::class);
-    }
+{
+    return $this->belongsTo(Customers::class, 'customer_id');
+}
+
 
     public function technician()
     {
@@ -40,6 +41,10 @@ class RepairOrder extends Model
     {
         return $this->belongsTo(SparePart::class, 'sparepart_id');
     }
+    public function transaksi()
+{
+    return $this->belongsTo(Customers::class, 'repair_id');
+}
 
 
 }

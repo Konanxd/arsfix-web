@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
 
     // Pesanan Perbaikan
     Route::get('/pesanan', [PesananPerbaikanController::class, 'index'])->name('pesanan.index');
+    Route::get('/pesananperbaikan', [PesananPerbaikanController::class, 'index'])->name('pesananperbaikan.index');
     Route::get('/pesanan/create', [PesananPerbaikanController::class, 'create'])->name('pesanan.create');
     Route::get('/pesanan/{id}/edit', [PesananPerbaikanController::class, 'edit'])->name('pesanan.edit');
     Route::get('/pesanan/{id}/show', [PesananPerbaikanController::class, 'show'])->name('pesanan.show');
@@ -64,10 +65,12 @@ Route::middleware('auth')->group(function () {
     Route::prefix('transaksi')->group(function () {
     Route::get('/', [TransaksiController::class, 'index'])->name('transaksi.index');
     Route::get('/create', [TransaksiController::class, 'create'])->name('transaksi.create');
+    Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
     Route::get('/transaksi/create', [TransaksiController::class, 'create'])->name('transaksi.create');
     Route::post('/store', [TransaksiController::class, 'store'])->name('transaksi.store');
     Route::get('/{id}', [TransaksiController::class, 'show'])->name('transaksi.show');
     Route::get('/{id}/edit', [TransaksiController::class, 'edit'])->name('transaksi.edit');
+    Route::get('/transaksi/{id}/detail-transaksi', [TransaksiController::class, 'show'])->name('transaksi.detail');
     Route::put('/{id}', [TransaksiController::class, 'update'])->name('transaksi.update');
     Route::delete('/{id}', [TransaksiController::class, 'destroy'])->name('transaksi.destroy');
 });

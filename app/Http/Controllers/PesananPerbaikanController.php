@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Customers;
 use App\Models\SparePart;
 use App\Models\RepairOrder;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -26,41 +27,51 @@ class PesananPerbaikanController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'customer_id' => 'required|exists:customers,id',
-            'technician_id' => 'required|exists:users,id',
-            'sparepart_id' => 'required|exists:spare_parts,id',
-            'order_date' => 'required|date',
-            'status' => 'required|in:Dalam Proses,Selesai,Batal',
-            'description' => 'required|string',
-            'estimated_cost' => 'required|integer',
-            'jumlah' => 'required|integer|min:1',
-        ]);
+{
+    $request->validate([
+        'customer_id' => 'required',
+        'technician_id' => 'required',
+        'sparepart_id' => 'required',
+        'order_date' => 'required|date',
+        'status' => 'required',
+        'description' => 'required',
+        'estimated_cost' => 'required|numeric',
+        'jumlah' => 'required|numeric|min:1',
+    ]);
 
-        $sparePart = SparePart::findOrFail($request->sparepart_id);
+    // Ambil sparepart yang digunakan
+    $sparePart = SparePart::findOrFail($request->sparepart_id);
 
-        if ($sparePart->stock < $request->jumlah) {
-            return back()->withErrors(['jumlah' => 'Stok suku cadang tidak mencukupi.'])->withInput();
-        }
-
-        RepairOrder::create([
-            'customer_id' => $request->customer_id,
-            'technician_id' => $request->technician_id,
-            'sparepart_id' => $request->sparepart_id,
-            'order_date' => $request->order_date,
-            'status' => $request->status,
-            'description' => $request->description,
-            'estimated_cost' => $request->estimated_cost,
-            'jumlah' => $request->jumlah,
-        ]);
-
-        // Kurangi stok sparepart
-        $sparePart->stock -= $request->jumlah;
-        $sparePart->save();
-
-        return redirect()->route('pesanan.index')->with('success', 'Pesanan berhasil dibuat');
+    // Cek apakah stok mencukupi
+    if ($sparePart->stock < $request->jumlah) {
+        return redirect()->back()->with('error', 'Stok sparepart tidak mencukupi.');
     }
+
+    // Buat pesanan perbaikan
+    $repairOrder = RepairOrder::create([
+        'customer_id' => $request->customer_id,
+        'technician_id' => $request->technician_id,
+        'sparepart_id' => $request->sparepart_id,
+        'order_date' => $request->order_date,
+        'status' => $request->status,
+        'description' => $request->description,
+        'estimated_cost' => $request->estimated_cost,
+        'jumlah' => $request->jumlah,
+    ]);
+
+    // Kurangi stok sparepart
+    $sparePart->stock -= $request->jumlah;
+    $sparePart->save();
+
+    // Buat transaksi berdasarkan repair_order yang baru dibuat
+    Transaction::create([
+        'repair_id' => $repairOrder->id,
+        'total_payment' => $request->estimated_cost,
+    ]);
+
+    return redirect()->route('pesananperbaikan.index')->with('success', 'Pesanan perbaikan berhasil ditambahkan.');
+}
+
 
 
         public function edit($id)
@@ -116,6 +127,9 @@ class PesananPerbaikanController extends Controller
         // Kurangi stok suku cadang baru
         $sparePartBaru->stock -= $request->jumlah;
         $sparePartBaru->save();
+
+        
+        
 
         return redirect()->route('pesanan.index')->with('success', 'Data pesanan perbaikan berhasil diperbarui!');
     }
