@@ -10,9 +10,10 @@ class TransaksiController extends Controller
 {
     public function index()
 {
-    $transactions = Transaction::with('repairOrder.customer')->get();
+    $transactions = Transaction::with('repairOrder.customer', 'repairOrder.technician')->get();
     return view('transaksi.index', compact('transactions'));
 }
+
 
 
     public function create()
@@ -23,28 +24,36 @@ class TransaksiController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'id' => 'required|unique:transactions,id',
-            'repair_id' => 'required|exists:repair_orders,id',
-            'total_payment' => 'required|numeric',
-        ]);
-
-        Transaction::create([
-            'id' => $request->id,
-            'repair_id' => $request->repair_id,
-            'total_payment' => $request->total_payment,
-        ]);
-
-        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil ditambahkan');
+{
+    // Ambil nilai dari form input (misalnya request biaya layanan dan harga sparepart)
+    $repairOrder = RepairOrder::find($request->repair_id);
+    
+    if (!$repairOrder) {
+        return redirect()->back()->with('error', 'Pesanan perbaikan tidak ditemukan.');
     }
+
+    // Hitung total pembayaran
+    $totalPayment = $repairOrder->estimated_cost + $repairOrder->sparepart->price;
+
+    // Simpan ke tabel transactions
+    Transaction::create([
+        'repair_id' => $request->repair_id,
+        'total_payment' => $totalPayment,
+    ]);
+
+    return redirect()->route('transaksi.detail-transaksi')->with('success', 'Transaksi berhasil ditambahkan.');
+}
+
 
     public function show($id)
-    {
-        // Pastikan nama relasi benar (repairOrder.customer)
-        $transaksi = Transaction::with('repairOrder.customer')->findOrFail($id);
-        return view('transaksi.detail-transaksi', compact('transaksi'));
-    }
+{
+    $transaction = Transaction::with('repairOrder.customer', 'repairOrder.technician', 'repairOrder.sparePart')->findOrFail($id);
+    $repairOrder = $transaction->repairOrder;
+
+    return view('transaksi.detail-transaksi', compact('transaction', 'repairOrder'));
+}
+
+
 
     public function edit($id)
     {

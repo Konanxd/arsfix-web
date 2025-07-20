@@ -13,8 +13,9 @@ class Transaction extends Model
     protected $keyType = 'int';
 
     protected $fillable = [
-        'id',
         'repair_id',
+        'spare_part_cost',
+        'service_fee',
         'total_payment',
     ];
 
