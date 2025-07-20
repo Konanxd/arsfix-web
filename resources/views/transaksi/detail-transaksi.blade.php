@@ -12,7 +12,7 @@
         {{-- TITLE --}}
         <div class="flex justify-between items-center mt-6 mb-6">
             <h1 class="text-3xl font-bold text-gray-800">Detail Transaksi</h1>
-            <button class="flex items-center px-5 py-3 border border-blue-600 text-blue-600 rounded-xl hover:bg-blue-50">
+            <a href="{{ route('transaksi.struk', $transaction->id) }}" class="flex items-center px-5 py-3 border border-blue-600 text-blue-600 rounded-xl hover:bg-blue-50">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="mr-3" viewBox="0 0 20 20">
                     <g fill="currentColor">
                         <rect width="18" height="11" x="2" y="7.5" opacity="0.2" rx="3"/>
@@ -23,7 +23,7 @@
                     </g>
                 </svg>
                 Cetak Struk Pembayaran
-            </button>
+            </a>
         </div>
 
         {{-- CARD --}}
@@ -82,7 +82,7 @@
                 <p class="text-sm text-blue-600 font-semibold mb-2">Total</p>
                 <div class="flex justify-between">
                     <p class="text-gray-800 font-semibold">Total Pembayaran</p>
-                    <p class="text-gray-800 font-semibold">Rp. {{ number_format($repairOrder->estimated_cost + $repairOrder->sparepart->price, 0, ',', '.') }}</p>
+                    <p class="text-gray-800 font-semibold">Rp. {{ number_format($totalPayment = $repairOrder->estimated_cost + $repairOrder->sparepart->price, 0,',','.')}}</p>
                 </div>
             </div>
         </div>

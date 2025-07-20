@@ -75,6 +75,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/transaksi/{id}/detail-transaksi', [TransaksiController::class, 'show'])->name('transaksi.detail');
     Route::put('/{id}', [TransaksiController::class, 'update'])->name('transaksi.update');
     Route::delete('/{id}', [TransaksiController::class, 'destroy'])->name('transaksi.destroy');
+    Route::get('/transaksi/{id}/struk', [TransaksiController::class, 'cetakStruk'])->name('transaksi.struk');
+
 });
 
 

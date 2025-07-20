@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Transaction;
 use App\Models\RepairOrder;
 use Illuminate\Http\Request;
@@ -42,6 +43,14 @@ class TransaksiController extends Controller
     ]);
 
     return redirect()->route('transaksi.detail-transaksi')->with('success', 'Transaksi berhasil ditambahkan.');
+}
+
+public function cetakStruk($id)
+{
+    $transaksi = Transaction::with(['repairOrder.sparepart', 'repairOrder.customer', 'repairOrder.technician'])->findOrFail($id);
+
+    $pdf = PDF::loadView('transaksi.struk', compact('transaksi'));
+    return $pdf->stream('struk-transaksi-'.$transaksi->id.'.pdf');
 }
 
 
