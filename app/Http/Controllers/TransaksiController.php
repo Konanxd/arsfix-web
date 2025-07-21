@@ -9,9 +9,23 @@ use Illuminate\Http\Request;
 
 class TransaksiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
 {
-    $transactions = Transaction::with('repairOrder.customer', 'repairOrder.technician')->get();
+    $query = Transaction::query();
+
+    if ($request->has('search')) {
+        $search = $request->search;
+
+        $query->whereHas('repairOrder.customer', function ($q) use ($search) {
+            $q->where('name', 'like', "%$search%")
+              ->orWhere('phone_number', 'like', "%$search%");
+        })
+        ->orWhere('id', 'like', "%$search%")
+        ->orWhere('total_payment', 'like', "%$search%");
+    }
+
+    $transactions = $query->with(['repairOrder.customer'])->latest()->get();
+
     return view('transaksi.index', compact('transactions'));
 }
 

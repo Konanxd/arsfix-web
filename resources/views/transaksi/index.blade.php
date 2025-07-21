@@ -4,9 +4,9 @@
         <h1 class="text-3xl font-bold text-gray-800">Transaksi</h1>
 
         {{-- SEARCH BAR DAN TOMBOL --}}
-        <div class="flex justify-between items-center mt-8">
-            <input type="text" placeholder="Cari data transaksi" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
+        <form method="GET" action="{{ route('transaksi.index') }}">
+            <input type="text" name="search" placeholder="Cari data transaksi" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ request('search') }}">
+        </form>
 
         <div class="mt-6 space-y-4">
             @forelse ($transactions as $transaction)
