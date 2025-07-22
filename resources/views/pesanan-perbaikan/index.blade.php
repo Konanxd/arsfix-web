@@ -1,4 +1,23 @@
 <x-app-layout>
+    @php
+        function formatPhoneNumber($phone_number) {
+            if (!$phone_number) return '-';
+            // Hapus semua karakter bukan angka
+            $digits = preg_replace('/\D/', '', $phone_number);
+
+            // Ambil 4 angka pertama, lalu 4 angka berikutnya, lalu sisanya
+            $part1 = substr($digits, 0, 3);
+            $part2 = substr($digits, 3, 4);
+            $part3 = substr($digits, 7);
+
+            $result = $part1;
+            if ($part2) $result .= '-' . $part2;
+            if ($part3) $result .= '-' . $part3;
+
+            return $result;
+        }
+    @endphp
+
     <div class="p-8">
         {{-- HEADER --}}
         <h1 class="text-3xl font-bold text-gray-800">Pesanan Perbaikan</h1>
@@ -14,11 +33,10 @@
                     class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
             </form>
-                <a href="{{ route('pesanan.create') }}" class="inline-flex items-center px-5 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 ml-4">
-                    + Tambah data
+            <a href="{{ route('pesanan.create') }}" class="inline-flex items-center px-5 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 ml-4">
+                + Tambah data
             </a>
         </div>
-
 
         {{-- DAFTAR PESANAN --}}
         <div class="mt-6 space-y-4">
@@ -33,14 +51,13 @@
                         <div>
                             <p class="font-bold text-gray-500">#{{ str_pad($pesanan->id, 4, '0', STR_PAD_LEFT) }}</p>
                             <p class="text-lg font-semibold text-gray-800">
-                                {{ $pesanan->customer->name ?? '-' }} | 
-                                {{ $pesanan->sparePart->name ?? '-' }}
+                                {{ $pesanan->customer->name ?? '-' }}
                             </p>
                             <p class="text-sm text-gray-600">
-                                {{ $pesanan->customer->phone_number ?? '-' }} | {{ $pesanan->description }}
+                                +62 {{ formatPhoneNumber($pesanan->customer->phone_number) ?? '-' }} | {{ $pesanan->customer->handphone }} | {{ $pesanan->description }} 
                             </p>
                             <div class="flex items-center space-x-2 mt-1">
-                                <p class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($pesanan->order_date)->format('d/m/y') }}</p>
+                                <p class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($pesanan->order_date)->translatedFormat('d F Y') }}</p>
                                 <span class="px-2 py-1 rounded text-xs font-medium 
                                     {{ 
                                         $pesanan->status === 'Selesai' ? 'bg-green-100 text-green-800' : 
@@ -68,7 +85,7 @@
                 </div>
             @empty
                 <div class="text-gray-500 text-center py-10">
-                    Tidak ada data pesanan perbaikan ditemukan.
+                    <p>Tidak ada data pesanan perbaikan yang cocok dengan pencarian "<strong>{{ request('search') }}</strong>".</p>
                 </div>
             @endforelse
         </div>

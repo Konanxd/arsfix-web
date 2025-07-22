@@ -60,23 +60,62 @@
                         <textarea id="deskripsi" name="description" rows="3" class="w-full mt-1 rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500">{{ $pesananPerbaikan->description }}</textarea>
                     </div>
 
+
                     {{-- Suku Cadang --}}
-                    <div>
+                    {{-- <div>
                         <x-input-label for="sparepart_id" value="Suku Cadang" />
                         <div class="flex gap-4 mt-1">
                             <select id="sparepart_id" name="sparepart_id" class="w-2/3 rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" onchange="updateMaxJumlah()">
                                 @foreach($spareParts as $part)
-                                    <option value="{{ $part->id }}" data-stock="{{ $part->stock }}" {{ $pesananPerbaikan->sparepart_id == $part->id ? 'selected' : '' }}>
+                                    <option value="{{ $part->id }}" data-stock="{{ $part->stock }}" 
+                                        {{ $pesananPerbaikan->spareparts->contains('id', $part->id) ? 'selected' : '' }}>
                                         {{ $part->name }}
                                     </option>
                                 @endforeach
                             </select>
                             <div class="flex flex-col w-1/3">
                                 <x-input-label for="jumlah" value="Jumlah" />
-                                <input type="number" class="rounded-xl bg-gray-100 border-transparent mt-1" name="jumlah" id="jumlah" value="{{ $pesananPerbaikan->jumlah }}" min="1" max="100">
+                                <input type="number" class="rounded-xl bg-gray-100 border-transparent mt-1" name="jumlah" id="jumlah" 
+                                    value="{{ optional($pesananPerbaikan->spareparts->first())->pivot->jumlah ?? 1 }}" min="1" max="100">
                             </div>
                         </div>
+                    </div> --}}
+                    {{-- Suku Cadang --}}
+                    <div>
+                        <x-input-label value="Suku Cadang" />
+                        {{-- Wrapper untuk seluruh grup sparepart --}}
+                        <div id="sparepart-wrapper">
+                            {{-- Baris pertama (default) --}}
+                            <div class="sparepart-group flex gap-4 mt-2">
+                                <select name="spare_part_id[]" class="sparepart-select w-2/3 rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" onchange="updateMaxJumlah(this)" required>
+                                    <option disabled selected>Pilih suku cadang</option>
+                                    @foreach($spareParts as $part)
+                                        <option value="{{ $part->id }}" data-stock="{{ $part->stock }}">
+                                            {{ $part->name }} (Stok: {{ $part->stock }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <div class="flex flex-col w-1/3">
+                                    <x-input-label for="jumlah" value="Jumlah" />
+                                    <input 
+                                        type="number"
+                                        name="jumlah[]"
+                                        class="jumlah-input rounded-xl bg-gray-100 border-transparent mt-1"
+                                        value="0" min="0" max="0" required
+                                    >
+                                </div>
+
+                                {{-- Tombol hapus baris --}}
+                                <button type="button" class="remove-sparepart px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600">×</button>
+                            </div>
+                        </div>
+
+                        {{-- Tombol tambah baris --}}
+                        <button type="button" onclick="addSparepartInput()" class="mt-3 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                            + Tambah Suku Cadang
+                        </button>
                     </div>
+
 
                     {{-- Estimasi Biaya --}}
                     <div>
@@ -108,18 +147,72 @@
         </div>
     </div>
 
-    <script>
-        function updateMaxJumlah() {
-            const select = document.getElementById('sparepart_id');
-            const jumlahInput = document.getElementById('jumlah');
-            const selectedOption = select.options[select.selectedIndex];
-            const stock = selectedOption.getAttribute('data-stock') || 0;
+<script>
+    function updateNamaTeknisi() {
+        const select = document.getElementById('id_teknisi');
+        const selectedOption = select.options[select.selectedIndex];
+        const namaTeknisi = selectedOption.getAttribute('data-nama') || '';
+        document.getElementById('nama_teknisi').value = namaTeknisi;
+    }
 
-            jumlahInput.max = stock;
-            if (parseInt(jumlahInput.value) > stock) {
-                jumlahInput.value = stock;
-            }
-            jumlahInput.disabled = stock == 0;
+    function updateDataPelanggan() {
+        const select = document.getElementById('id_pelanggan');
+        const selectedOption = select.options[select.selectedIndex];
+
+        const nama = selectedOption.getAttribute('data-nama') || '';
+        const telepon = selectedOption.getAttribute('data-telepon') || '';
+        const handphone = selectedOption.getAttribute('data-handphone') || '';
+
+        document.getElementById('nama_pelanggan').value = nama;
+        document.getElementById('telepon').value = telepon;
+        document.getElementById('handphone').value = handphone;
+
+        // Update hidden inputs supaya data terkirim saat submit
+        document.getElementById('telepon_hidden').value = telepon;
+        document.getElementById('handphone_hidden').value = handphone;
+    }
+
+    function updateMaxJumlah(selectElement) {
+        const group = selectElement.closest('.sparepart-group');
+        const jumlahInput = group.querySelector('.jumlah-input');
+        const selectedOption = selectElement.options[selectElement.selectedIndex];
+        const stock = selectedOption.getAttribute('data-stock') || 0;
+
+        jumlahInput.max = stock;
+
+        if (parseInt(jumlahInput.value) > stock) {
+            jumlahInput.value = stock;
         }
-    </script>
+
+        jumlahInput.disabled = stock == 0;
+    }
+
+    function addSparepartInput() {
+        const wrapper = document.getElementById('sparepart-wrapper');
+        const firstGroup = wrapper.querySelector('.sparepart-group');
+        const newGroup = firstGroup.cloneNode(true);
+
+        // Reset nilai select dan input
+        const select = newGroup.querySelector('select');
+        const jumlah = newGroup.querySelector('input');
+
+        select.selectedIndex = 0;
+        jumlah.value = 0;
+        jumlah.max = 0;
+
+        wrapper.appendChild(newGroup);
+    }
+
+    // Hapus baris
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('remove-sparepart')) {
+            const groups = document.querySelectorAll('.sparepart-group');
+            if (groups.length > 1) {
+                e.target.closest('.sparepart-group').remove();
+            } else {
+                alert('Minimal satu suku cadang diperlukan.');
+            }
+        }
+    });
+</script>
 </x-app-layout>

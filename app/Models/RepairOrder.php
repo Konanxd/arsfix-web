@@ -4,6 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Customer;
+use App\Models\User;
+use App\Models\SparePart;
+use App\Models\Transaction;
 
 class RepairOrder extends Model
 {
@@ -18,12 +22,12 @@ class RepairOrder extends Model
         'id',
         'customer_id',
         'technician_id',
-        'sparepart_id',
+        // 'sparepart_id',
         'order_date',
         'status',
         'description',
         'estimated_cost',
-        'jumlah',
+        // 'jumlah',
     ];
 
     public function customer()
@@ -37,14 +41,19 @@ class RepairOrder extends Model
         return $this->belongsTo(User::class, 'technician_id');
     }
 
-    public function sparePart()
+    public function spareparts()
     {
-        return $this->belongsTo(SparePart::class, 'sparepart_id');
+        return $this->belongsToMany(SparePart::class, 'repair_order_spareparts')
+                    ->withPivot('jumlah') // jika ada kolom jumlah di pivot
+                    ->withTimestamps();
     }
+
+
     public function transaksi()
     {
-        return $this->belongsTo(Customers::class, 'repair_id');
+        return $this->hasOne(Transaction::class, 'repair_id');
     }
+
 
 
 }

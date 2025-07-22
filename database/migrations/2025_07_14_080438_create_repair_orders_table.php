@@ -15,12 +15,12 @@ return new class extends Migration
             // Tambahkan kolom technician_id lebih dulu
             $table->foreignId('technician_id')->constrained('users')->onDelete('cascade');
 
-            $table->foreignId('sparepart_id')->constrained('spare_parts')->onDelete('cascade');
+            // $table->foreignId('sparepart_id')->constrained('spare_parts')->onDelete('cascade');
             $table->date('order_date');
             $table->enum('status',['Dalam Proses', 'Selesai', 'Batal']);
             $table->longText('description')->nullable();
             $table->integer('estimated_cost');
-            $table->unsignedInteger('jumlah')->default(1);
+            // $table->unsignedInteger('jumlah')->default(1);
             $table->timestamps();
         });
     }

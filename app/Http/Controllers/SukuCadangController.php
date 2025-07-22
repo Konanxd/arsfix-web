@@ -11,16 +11,15 @@ class SukuCadangController extends Controller
     {
         $query = SparePart::query();
 
-        // Implementasi pencarian (Mencari Data Suku Cadang)
         if ($request->has('search')) {
-            $searchTerm = $request->input('search');
-            $query->where('name', 'like', '%' . $searchTerm . '%')
-                ->orWhere('id', 'like', '%' . $searchTerm . '%');
+            $search = $request->search;
+
+            $query->where('name', 'like', "%$search%");
         }
 
-        $sukuCadang = $query->paginate(10); // Sesuaikan jumlah item per halaman
+        $sukuCadang = $query->latest()->get();
+        $sukuCadang = $query->orderBy('id', 'desc')->get(); // Terbaru dulu
 
-        // Kirim data ke view
         return view('suku-cadang.index', compact('sukuCadang'));
     }
 

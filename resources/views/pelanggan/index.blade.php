@@ -1,5 +1,23 @@
 {{-- File: resources/views/dashboard.blade.php --}}
 <x-app-layout>
+    @php
+        function formatPhoneNumber($phone_number) {
+            if (!$phone_number) return '-';
+            // Hapus semua karakter bukan angka
+            $digits = preg_replace('/\D/', '', $phone_number);
+
+            // Ambil 4 angka pertama, lalu 4 angka berikutnya, lalu sisanya
+            $part1 = substr($digits, 0, 3);
+            $part2 = substr($digits, 3, 4);
+            $part3 = substr($digits, 7);
+
+            $result = $part1;
+            if ($part2) $result .= '-' . $part2;
+            if ($part3) $result .= '-' . $part3;
+
+            return $result;
+        }
+    @endphp
     <div class="p-8">
         {{-- HEADER --}}
         <h1 class="text-3xl font-bold text-gray-800">Data Pelanggan</h1>
@@ -29,7 +47,7 @@
                         <div>
                             <p class="font-bold text-gray-500">#{{ $customer->id }}</p>
                             <p class="text-lg font-semibold text-gray-800">{{ $customer->name }}</p>
-                            <p class="text-sm text-gray-600">+62 {{ $customer->phone_number }} | {{ $customer->handphone }}</p>
+                            <p class="text-sm text-gray-600">+62 {{ formatPhoneNumber($customer->phone_number) ?? '-' }}  | {{ $customer->handphone }}</p>
                         </div>
                     </div>
                     <div class="flex space-x-3 self-end lg:self-auto">

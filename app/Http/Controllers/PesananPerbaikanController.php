@@ -11,22 +11,12 @@ use Illuminate\Http\Request;
 
 class PesananPerbaikanController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $query = RepairOrder::with(['customer', 'technician']);
-
-        if ($request->filled('search')) {
-            $searchTerm = $request->search;
-            $query->whereHas('customer', function ($q) use ($searchTerm) {
-                $q->where('name', 'like', '%' . $searchTerm . '%');
-            });
-        }
-
-        $pesananPerbaikan = $query->latest()->paginate(10);
-
+        // Ambil semua repair order beserta relasi customer, technician, spareparts
+        $pesananPerbaikan = RepairOrder::with(['customer', 'technician', 'spareparts'])->get();
         return view('pesanan-perbaikan.index', compact('pesananPerbaikan'));
     }
-
 
     public function create()
     {
@@ -38,134 +28,162 @@ class PesananPerbaikanController extends Controller
     }
 
     public function store(Request $request)
-{
-    $request->validate([
-        'customer_id' => 'required',
-        'technician_id' => 'required',
-        'sparepart_id' => 'required',
-        'order_date' => 'required|date',
-        'status' => 'required',
-        'description' => 'required',
-        'estimated_cost' => 'required|numeric',
-        'jumlah' => 'required|numeric|min:1',
-    ]);
+    {
+        $request->validate([
+            // validasi input
+            'customer_id' => 'required|exists:customers,id',
+            'technician_id' => 'required|exists:users,id',
+            'order_date' => 'required|date',
+            'status' => 'required',
+            'description' => 'required|string',
+            'estimated_cost' => 'required|numeric',
 
-    // Ambil sparepart yang digunakan
-    $sparePart = SparePart::findOrFail($request->sparepart_id);
+            'spare_part_id'   => 'required|array',
+            'spare_part_id.*' => 'exists:spare_parts,id',
+            'jumlah'         => 'required|array',
+            'jumlah.*'       => 'integer|min:1',
+        ]);
 
-    // Cek apakah stok mencukupi
-    if ($sparePart->stock < $request->jumlah) {
-        return redirect()->back()->with('error', 'Stok sparepart tidak mencukupi.');
+        // Simpan RepairOrder dulu tanpa sparepart_id dan jumlah
+        $repairOrder = RepairOrder::create([
+            'customer_id' => $request->customer_id,
+            'technician_id' => $request->technician_id,
+            'order_date' => $request->order_date,
+            'status' => $request->status,
+            'description' => $request->description,
+            'estimated_cost' => $request->estimated_cost,
+        ]);
+        // Loop sparepart dan attach ke repairOrder (pivot table)
+        foreach ($request->spare_part_id as $index => $sparepartId) {
+            $jumlah = $request->jumlah[$index];
+            $sparepart = SparePart::findOrFail($sparepartId);
+
+            if ($sparepart->stock < $jumlah) {
+                return redirect()->back()->with('error', "Stok {$sparepart->name} tidak mencukupi.");
+            }
+
+            $repairOrder->spareparts()->attach($sparepartId, ['jumlah' => $jumlah]);
+
+            $sparepart->stock -= $jumlah;
+            $sparepart->save();
+        }
+
+        // Simpan transaksi
+        Transaction::create([
+            'repair_id' => $repairOrder->id,
+            'total_payment' => $request->estimated_cost,
+        ]);
+
+        return redirect()->route('pesananperbaikan.index')->with('success', 'Pesanan perbaikan berhasil ditambahkan.');
     }
 
-    // Buat pesanan perbaikan
-    $repairOrder = RepairOrder::create([
-        'customer_id' => $request->customer_id,
-        'technician_id' => $request->technician_id,
-        'sparepart_id' => $request->sparepart_id,
-        'order_date' => $request->order_date,
-        'status' => $request->status,
-        'description' => $request->description,
-        'estimated_cost' => $request->estimated_cost,
-        'jumlah' => $request->jumlah,
-    ]);
 
-    // Kurangi stok sparepart
-    $sparePart->stock -= $request->jumlah;
-    $sparePart->save();
+    public function edit($id)
+    {
+        $pesananPerbaikan = RepairOrder::with(['customer', 'technician', 'spareparts'])->findOrFail($id);
+        $customers = Customers::all();
+        $technicians = User::all();
+        $spareParts = SparePart::all();
 
-    // Buat transaksi berdasarkan repair_order yang baru dibuat
-    Transaction::create([
-        'repair_id' => $repairOrder->id,
-        'total_payment' => $request->estimated_cost,
-    ]);
+        return view('pesanan-perbaikan.edit', compact('pesananPerbaikan', 'customers', 'technicians', 'spareParts'));
+    }
 
-    return redirect()->route('pesananperbaikan.index')->with('success', 'Pesanan perbaikan berhasil ditambahkan.');
-}
-
-
-
-        public function edit($id)
-        {
-            $pesananPerbaikan = RepairOrder::findOrFail($id);
-            $customers = Customers::all();
-            $technicians = User::all();
-            $spareParts = SparePart::all();
-
-            return view('pesanan-perbaikan.edit', compact('pesananPerbaikan', 'customers', 'technicians', 'spareParts'));
-        }
 
     public function update(Request $request, $id)
     {
         $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'technician_id' => 'required|exists:users,id',
-            'sparepart_id' => 'required|exists:spare_parts,id',
             'order_date' => 'required|date',
             'status' => 'required|in:Dalam Proses,Selesai,Batal',
-            'description' => 'required|string',
-            'estimated_cost' => 'required|integer',
-            'jumlah' => 'required|integer|min:1',
+            'description' => 'nullable|string',
+            'estimated_cost' => 'required|numeric',
+
+            'spare_part_id' => 'required|array',
+            'spare_part_id.*' => 'exists:spare_parts,id',
+            'jumlah' => 'required|array',
+            'jumlah.*' => 'integer|min:1',
         ]);
 
-        $pesananPerbaikan = RepairOrder::findOrFail($id);
+        $repairOrder = RepairOrder::with('spareparts')->findOrFail($id);
 
-        // Ambil data sparepart lama dan baru
-        $sparePartLama = SparePart::findOrFail($pesananPerbaikan->sparepart_id);
-        $sparePartBaru = SparePart::findOrFail($request->sparepart_id);
-
-        // Kembalikan stok suku cadang lama
-        $sparePartLama->stock += $pesananPerbaikan->jumlah;
-        $sparePartLama->save();
-
-        // Periksa stok suku cadang baru
-        if ($sparePartBaru->stock < $request->jumlah) {
-            return back()->withErrors(['jumlah' => 'Stok suku cadang tidak mencukupi.'])->withInput();
+        // Kembalikan stok sparepart lama dulu supaya stok update dengan benar
+        foreach ($repairOrder->spareparts as $sparepart) {
+            $sparepart->stock += $sparepart->pivot->jumlah;
+            $sparepart->save();
         }
 
-        // Update pesanan
-        $pesananPerbaikan->update([
+        $sparepartsData = [];
+        // Loop semua sparepart baru, cek stok dan kurangi stok sesuai jumlah
+        foreach ($request->sparepart_id as $index => $sparepartId) {
+            $jumlah = $request->jumlah[$index] ?? 0;
+            if ($jumlah < 1) {
+                return redirect()->back()->with('error', "Jumlah sparepart harus minimal 1")->withInput();
+            }
+
+            $sparepart = SparePart::findOrFail($sparepartId);
+
+            if ($sparepart->stock < $jumlah) {
+                return redirect()->back()->with('error', "Stok sparepart {$sparepart->name} tidak mencukupi.")->withInput();
+            }
+
+            $sparepart->stock -= $jumlah;
+            $sparepart->save();
+
+            $sparepartsData[$sparepartId] = ['jumlah' => $jumlah];
+        }
+
+        // Update data repair order utama
+        $repairOrder->update([
             'customer_id' => $request->customer_id,
             'technician_id' => $request->technician_id,
-            'sparepart_id' => $request->sparepart_id,
             'order_date' => $request->order_date,
             'status' => $request->status,
             'description' => $request->description,
             'estimated_cost' => $request->estimated_cost,
-            'jumlah' => $request->jumlah,
         ]);
 
-        // Kurangi stok suku cadang baru
-        $sparePartBaru->stock -= $request->jumlah;
-        $sparePartBaru->save();
-
-        
-        
+        // Sync sparepart dengan jumlah baru
+        $repairOrder->spareparts()->sync($sparepartsData);
 
         return redirect()->route('pesanan.index')->with('success', 'Data pesanan perbaikan berhasil diperbarui!');
     }
 
 
+
+
     public function show($id)
     {
-        $pesananPerbaikan = RepairOrder::with(['customer', 'technician', 'sparePart'])->findOrFail($id);
+        $pesananPerbaikan = RepairOrder::with(['customer', 'technician', 'spareparts'])->findOrFail($id);
         return view('pesanan-perbaikan.show', compact('pesananPerbaikan'));
     }
 
-
-
     public function destroy($id)
     {
-        $pesananPerbaikan = RepairOrder::findOrFail($id);
+        $pesananPerbaikan = RepairOrder::with('spareparts')->findOrFail($id);
 
-        // Restore stok sparepart saat hapus pesanan
-        $sparePart = SparePart::findOrFail($pesananPerbaikan->sparepart_id);
-        $sparePart->stock += $pesananPerbaikan->jumlah;
-        $sparePart->save();
+        // Kembalikan stok spareparts yang terkait
+        foreach ($pesananPerbaikan->spareparts as $sparepart) {
+            $sparepart->stock += $sparepart->pivot->jumlah;
+            $sparepart->save();
+        }
 
+        // Hapus repair order (pivot akan otomatis terhapus jika relasi sudah pakai onDelete cascade)
         $pesananPerbaikan->delete();
 
         return redirect()->route('pesanan.index')->with('success', 'Data pesanan perbaikan berhasil dihapus!');
     }
 
+
+    public function search(Request $request)
+    {
+        $keyword = $request->input('keyword');
+
+        $pesananPerbaikan = RepairOrder::with(['customer', 'technician', 'spareparts'])
+            ->where('description', 'like', '%' . $keyword . '%')
+            ->orWhere('id', 'like', '%' . $keyword . '%')
+            ->get();
+
+        return view('pesanan-perbaikan.index', compact('pesananPerbaikan'));
+    }
 }

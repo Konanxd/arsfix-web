@@ -20,4 +20,12 @@ class SparePart extends Model
         'price',
         'stock',
     ];
+
+    public function repairOrders()
+    {
+        return $this->belongsToMany(RepairOrder::class, 'repair_order_spareparts')
+                    ->withPivot('jumlah')
+                    ->withTimestamps();
+    }
+    
 }

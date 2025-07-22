@@ -10,73 +10,78 @@ use Illuminate\Http\Request;
 class TransaksiController extends Controller
 {
     public function index(Request $request)
-{
-    $query = Transaction::query();
+    {
+        $query = Transaction::query();
 
-    if ($request->has('search')) {
-        $search = $request->search;
+        if ($request->has('search')) {
+            $search = $request->search;
 
-        $query->whereHas('repairOrder.customer', function ($q) use ($search) {
-            $q->where('name', 'like', "%$search%")
-              ->orWhere('phone_number', 'like', "%$search%");
-        })
-        ->orWhere('id', 'like', "%$search%")
-        ->orWhere('total_payment', 'like', "%$search%");
+            $query->whereHas('repairOrder.customer', function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                  ->orWhere('phone_number', 'like', "%$search%");
+            })
+            ->orWhere('id', 'like', "%$search%")
+            ->orWhere('total_payment', 'like', "%$search%");
+        }
+
+        $transactions = $query->with(['repairOrder.customer'])->latest()->get();
+
+        return view('transaksi.index', compact('transactions'));
     }
-
-    $transactions = $query->with(['repairOrder.customer'])->latest()->get();
-
-    return view('transaksi.index', compact('transactions'));
-}
-
-
 
     public function create()
     {
-        // Ambil semua pesanan perbaikan yang memiliki customer
+        // Ambil semua repair order beserta customer yang ada
         $repairOrders = RepairOrder::with('customer')->get();
         return view('transaksi.create', compact('repairOrders'));
     }
 
     public function store(Request $request)
-{
-    // Ambil nilai dari form input (misalnya request biaya layanan dan harga sparepart)
-    $repairOrder = RepairOrder::find($request->repair_id);
-    
-    if (!$repairOrder) {
-        return redirect()->back()->with('error', 'Pesanan perbaikan tidak ditemukan.');
+    {
+        $request->validate([
+            'repair_id' => 'required|exists:repair_orders,id',
+        ]);
+
+        $repairOrder = RepairOrder::with('spareparts')->find($request->repair_id);
+
+        if (!$repairOrder) {
+            return redirect()->back()->with('error', 'Pesanan perbaikan tidak ditemukan.');
+        }
+
+        // Hitung total harga spareparts (jumlah * harga tiap sparepart)
+        $totalSparePartCost = 0;
+        foreach ($repairOrder->spareparts as $sparepart) {
+            $totalSparePartCost += $sparepart->price * $sparepart->pivot->jumlah;
+        }
+
+        // Total payment = biaya jasa + total harga sparepart
+        $totalPayment = $repairOrder->estimated_cost + $totalSparePartCost;
+
+        Transaction::create([
+            'repair_id' => $repairOrder->id,
+            'spare_part_cost' => $totalSparePartCost,
+            'service_fee' => $repairOrder->estimated_cost,
+            'total_payment' => $totalPayment,
+        ]);
+
+        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil ditambahkan.');
     }
 
-    // Hitung total pembayaran
-    $totalPayment = $repairOrder->estimated_cost + $repairOrder->sparepart->price;
+    public function cetakStruk($id)
+    {
+        $transaksi = Transaction::with(['repairOrder.spareparts', 'repairOrder.customer', 'repairOrder.technician'])->findOrFail($id);
 
-    // Simpan ke tabel transactions
-    Transaction::create([
-        'repair_id' => $request->repair_id,
-        'total_payment' => $totalPayment,
-    ]);
-
-    return redirect()->route('transaksi.detail-transaksi')->with('success', 'Transaksi berhasil ditambahkan.');
-}
-
-public function cetakStruk($id)
-{
-    $transaksi = Transaction::with(['repairOrder.sparepart', 'repairOrder.customer', 'repairOrder.technician'])->findOrFail($id);
-
-    $pdf = PDF::loadView('transaksi.struk', compact('transaksi'));
-    return $pdf->stream('struk-transaksi-'.$transaksi->id.'.pdf');
-}
-
+        $pdf = PDF::loadView('transaksi.struk', compact('transaksi'));
+        return $pdf->stream('struk-transaksi-' . $transaksi->id . '.pdf');
+    }
 
     public function show($id)
-{
-    $transaction = Transaction::with('repairOrder.customer', 'repairOrder.technician', 'repairOrder.sparePart')->findOrFail($id);
-    $repairOrder = $transaction->repairOrder;
+    {
+        $transaction = Transaction::with(['repairOrder.customer', 'repairOrder.technician', 'repairOrder.spareparts'])->findOrFail($id);
+        $repairOrder = $transaction->repairOrder;
 
-    return view('transaksi.detail-transaksi', compact('transaction', 'repairOrder'));
-}
-
-
+        return view('transaksi.detail-transaksi', compact('transaction', 'repairOrder'));
+    }
 
     public function edit($id)
     {
@@ -86,12 +91,22 @@ public function cetakStruk($id)
     }
 
     public function detail($id)
-{
-    $transaction = Transaction::with(['repairOrder.customer', 'repairOrder.technician'])
-        ->findOrFail($id);
+    {
+        $transaction = Transaction::with(['repairOrder.customer', 'repairOrder.technician', 'repairOrder.spareparts'])
+            ->findOrFail($id);
 
-    return view('transaksi.detail', compact('transaction'));
-}
+        // Ambil repair order
+        $repairOrder = $transaction->repairOrder;
+
+        // Loop spareparts dan ambil data dari pivot
+        foreach ($repairOrder->spareparts as $sparepart) {
+            echo "Nama Sparepart: " . $sparepart->name . "<br>";
+            echo "Harga: Rp " . number_format($sparepart->price, 0, ',', '.') . "<br>";
+            echo "Jumlah di pivot: " . $sparepart->pivot->jumlah . "<br><br>";
+        }
+
+        return view('transaksi.detail', compact('transaction'));
+    }
 
 
     public function update(Request $request, $id)

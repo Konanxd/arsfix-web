@@ -24,9 +24,9 @@ class Transaction extends Model
         return $this->belongsTo(RepairOrder::class, 'repair_id');
     }
 
-    // Akses pelanggan melalui pesanan perbaikan
-    public function customer()
+    // Jika ingin fungsi helper untuk customer (bukan relasi), buat seperti ini:
+    public function getCustomerAttribute()
     {
-        return $this->repairOrder->customer;
+        return $this->repairOrder ? $this->repairOrder->customer : null;
     }
 }

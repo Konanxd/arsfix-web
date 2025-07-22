@@ -1,4 +1,22 @@
 <x-app-layout>
+    @php
+        function formatPhoneNumber($phone_number) {
+            if (!$phone_number) return '-';
+            // Hapus semua karakter bukan angka
+            $digits = preg_replace('/\D/', '', $phone_number);
+
+            // Ambil 4 angka pertama, lalu 4 angka berikutnya, lalu sisanya
+            $part1 = substr($digits, 0, 3);
+            $part2 = substr($digits, 3, 4);
+            $part3 = substr($digits, 7);
+
+            $result = $part1;
+            if ($part2) $result .= '-' . $part2;
+            if ($part3) $result .= '-' . $part3;
+
+            return $result;
+        }
+    @endphp
     <div class="p-8">
         {{-- BREADCRUMB --}}
         <div class="flex items-center text-sm font-semibold mb-4">
@@ -24,7 +42,7 @@
             <div>
                 <p class="text-sm text-gray-500 font-medium">Pelanggan</p>
                 <p class="text-lg font-semibold text-gray-800">
-                    {{ $pesananPerbaikan->customer->name }} (ID: {{ $pesananPerbaikan->customer->id }})
+                    {{ $pesananPerbaikan->customer->name }}
                 </p>
             </div>
 
@@ -32,42 +50,44 @@
                 <div>
                     <p class="text-sm text-gray-500 font-medium">No. Telepon</p>
                     <p class="text-base text-gray-800 font-semibold">
-                        {{ $pesananPerbaikan->customer->handphone ?? '-' }}
+                       +62 {{ formatPhoneNumber($pesananPerbaikan->customer->phone_number) ?? '-' }}
                     </p>
                 </div>
                 <div>
                     <p class="text-sm text-gray-500 font-medium">Tanggal Order</p>
-                    <p class="text-base text-gray-800 font-semibold">
-                        {{ \Carbon\Carbon::parse($pesananPerbaikan->order_date)->format('d/m/Y') }}
-                    </p>
+                    <p class="text-base text-gray-800 font-semibold">{{ \Carbon\Carbon::parse($pesananPerbaikan->order_date)->translatedFormat('d F Y') }}</p>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500 font-medium">Handphone</p>
+                    <p class="text-sm text-gray-500 font-medium">Gadget</p>
                     <p class="text-base text-gray-800 font-semibold">
-                        +62 {{ $pesananPerbaikan->customer->phone_number ?? '-' }}
+                        {{ $pesananPerbaikan->customer->handphone ?? '-' }}
                     </p>
                 </div>
                 <div>
                     <p class="text-sm text-gray-500 font-medium">Teknisi</p>
                     <p class="text-base text-gray-800 font-semibold">
-                        {{ $pesananPerbaikan->technician->name }} (ID: {{ $pesananPerbaikan->technician->id }})
+                        {{ $pesananPerbaikan->technician->name }}
                     </p>
                 </div>
             </div>
 
             <div>
                 <p class="text-sm text-gray-500 font-medium">Deskripsi Kerusakan</p>
-                <p class="text-base text-gray-800">
+                <p class="text-base text-gray-800 font-semibold">
                     {{ $pesananPerbaikan->description }}
                 </p>
             </div>
 
             <div>
                 <p class="text-sm text-gray-500 font-medium">Suku Cadang Digunakan</p>
-                <ul class="list-disc ml-5 text-gray-800">
-                    <li>{{ $pesananPerbaikan->sparepart->name ?? '-' }} ({{ $pesananPerbaikan->jumlah ?? 1 }} unit)</li>
+                <ul class="list-disc list-inside text-gray-800 font-semibold">
+                    @foreach ($pesananPerbaikan->spareparts as $sparepart)
+                        <li>{{ $sparepart->name }} (Jumlah: {{ $sparepart->pivot->jumlah }})</li>
+                    @endforeach
                 </ul>
             </div>
+
+
 
             <div class="grid md:grid-cols-2 gap-6">
                 <div>
