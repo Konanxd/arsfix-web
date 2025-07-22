@@ -5,11 +5,20 @@
 
         {{-- SEARCH BAR DAN TOMBOL --}}
         <div class="flex justify-between items-center mt-8">
-            <input type="text" placeholder="Cari data pesanan" class="w-full max-w-md px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <a href="{{ route('pesanan.create') }}" class="inline-flex items-center px-5 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 ml-4">
-                + Tambah data
+            <form action="{{ route('pesanan.index') }}" method="GET" class="w-full max-w-md">
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ request('search') }}"
+                    placeholder="Cari data pesanan"
+                    class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+            </form>
+                <a href="{{ route('pesanan.create') }}" class="inline-flex items-center px-5 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 ml-4">
+                    + Tambah data
             </a>
         </div>
+
 
         {{-- DAFTAR PESANAN --}}
         <div class="mt-6 space-y-4">

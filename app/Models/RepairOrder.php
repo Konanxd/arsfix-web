@@ -42,9 +42,9 @@ class RepairOrder extends Model
         return $this->belongsTo(SparePart::class, 'sparepart_id');
     }
     public function transaksi()
-{
-    return $this->belongsTo(Customers::class, 'repair_id');
-}
+    {
+        return $this->belongsTo(Customers::class, 'repair_id');
+    }
 
 
 }

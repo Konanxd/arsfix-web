@@ -11,11 +11,22 @@ use Illuminate\Http\Request;
 
 class PesananPerbaikanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $pesananPerbaikan = RepairOrder::with(['customer', 'technician', 'sparePart'])->get();
+        $query = RepairOrder::with(['customer', 'technician']);
+
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->whereHas('customer', function ($q) use ($searchTerm) {
+                $q->where('name', 'like', '%' . $searchTerm . '%');
+            });
+        }
+
+        $pesananPerbaikan = $query->latest()->paginate(10);
+
         return view('pesanan-perbaikan.index', compact('pesananPerbaikan'));
     }
+
 
     public function create()
     {
@@ -157,16 +168,4 @@ class PesananPerbaikanController extends Controller
         return redirect()->route('pesanan.index')->with('success', 'Data pesanan perbaikan berhasil dihapus!');
     }
 
-
-    public function search(Request $request)
-    {
-        $keyword = $request->input('keyword');
-
-        $pesananPerbaikan = RepairOrder::with(['customer', 'technician', 'sparePart'])
-            ->where('description', 'like', '%' . $keyword . '%')
-            ->orWhere('id', 'like', '%' . $keyword . '%')
-            ->get();
-
-        return view('pesanan-perbaikan.index', compact('pesananPerbaikan'));
-    }
 }
