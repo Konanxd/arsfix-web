@@ -147,14 +147,14 @@
                     </div>
 
                     {{-- Status --}}
-                    <div>
+                    {{-- <div>
                         <x-input-label for="status" value="Status Pesanan" />
                         <select id="status" name="status" class="block w-full mt-1 bg-gray-100 border-transparent rounded-xl">
                             <option value="Dalam Proses">Dalam Proses</option>
                             <option value="Selesai">Selesai</option>
                             <option value="Batal">Batal</option>
                         </select>
-                    </div>
+                    </div> --}}
 
                     {{-- Submit --}}
                     <div class="flex justify-end pt-4">

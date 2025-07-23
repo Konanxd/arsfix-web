@@ -1,5 +1,5 @@
 <x-app-layout>
-    @php
+    {{-- @php
         function formatPhoneNumber($phone_number) {
             if (!$phone_number) return '-';
             // Hapus semua karakter bukan angka
@@ -16,7 +16,8 @@
 
             return $result;
         }
-    @endphp
+    @endphp --}}
+
     <div class="p-8">
         {{-- BREADCRUMB --}}
         <div class="flex items-center text-sm font-semibold mb-4">
@@ -87,8 +88,6 @@
                 </ul>
             </div>
 
-
-
             <div class="grid md:grid-cols-2 gap-6">
                 <div>
                     <p class="text-sm text-gray-500 font-medium">Estimasi Biaya</p>
@@ -103,6 +102,37 @@
                     </p>
                 </div>
             </div>
+
+            @if (!in_array($pesananPerbaikan->status, ['Selesai', 'Dibatalkan']))
+                <div class="mt-6 pt-6 border-t flex items-center space-x-4 justify-end">
+                    {{-- Tombol Batal --}}
+                    <form id="cancel-form-{{ $pesananPerbaikan->id }}" action="{{ route('pesanan.cancel', ['id' => $pesananPerbaikan->id]) }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <button type="button" 
+                                onclick="confirmAction('cancel-form-{{ $pesananPerbaikan->id }}', 'Anda yakin ingin membatalkan pesanan ini?')"
+                                class="inline-flex items-center px-5 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-sm text-white hover:bg-red-700">
+                            Batal Pesanan
+                        </button>
+                    </form>
+                    {{-- Tombol Selesaikan Pesanan (BARU) --}}
+                    <form action="{{ route('transaksi.store') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="repair_id" value="{{ $pesananPerbaikan->id }}">
+                        <button type="submit" class="inline-flex items-center px-5 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-sm text-white hover:bg-green-700">
+                            Selesaikan Pesanan
+                        </button>
+                    </form>
+
+                    {{-- Tombol Edit --}}
+                    {{-- <a href="{{ route('pesanan.edit', ['id' => $pesananPerbaikan->id]) }}" class="inline-flex items-center px-5 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-sm text-white hover:bg-blue-700">
+                        Edit Pesanan
+                    </a> --}}
+
+                </div>
+            @endif
+
+
         </div>
     </div>
 </x-app-layout>

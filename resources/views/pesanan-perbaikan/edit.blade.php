@@ -60,57 +60,71 @@
                         <textarea id="deskripsi" name="description" rows="3" class="w-full mt-1 rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500">{{ $pesananPerbaikan->description }}</textarea>
                     </div>
 
-
-                    {{-- Suku Cadang --}}
-                    {{-- <div>
-                        <x-input-label for="sparepart_id" value="Suku Cadang" />
-                        <div class="flex gap-4 mt-1">
-                            <select id="sparepart_id" name="sparepart_id" class="w-2/3 rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" onchange="updateMaxJumlah()">
-                                @foreach($spareParts as $part)
-                                    <option value="{{ $part->id }}" data-stock="{{ $part->stock }}" 
-                                        {{ $pesananPerbaikan->spareparts->contains('id', $part->id) ? 'selected' : '' }}>
-                                        {{ $part->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <div class="flex flex-col w-1/3">
-                                <x-input-label for="jumlah" value="Jumlah" />
-                                <input type="number" class="rounded-xl bg-gray-100 border-transparent mt-1" name="jumlah" id="jumlah" 
-                                    value="{{ optional($pesananPerbaikan->spareparts->first())->pivot->jumlah ?? 1 }}" min="1" max="100">
-                            </div>
-                        </div>
-                    </div> --}}
                     {{-- Suku Cadang --}}
                     <div>
                         <x-input-label value="Suku Cadang" />
-                        {{-- Wrapper untuk seluruh grup sparepart --}}
-                        <div id="sparepart-wrapper">
-                            {{-- Baris pertama (default) --}}
-                            <div class="sparepart-group flex gap-4 mt-2">
-                                <select name="spare_part_id[]" class="sparepart-select w-2/3 rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" onchange="updateMaxJumlah(this)" required>
-                                    <option disabled selected>Pilih suku cadang</option>
-                                    @foreach($spareParts as $part)
-                                        <option value="{{ $part->id }}" data-stock="{{ $part->stock }}">
-                                            {{ $part->name }} (Stok: {{ $part->stock }})
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <div class="flex flex-col w-1/3">
-                                    <x-input-label for="jumlah" value="Jumlah" />
-                                    <input 
-                                        type="number"
-                                        name="jumlah[]"
-                                        class="jumlah-input rounded-xl bg-gray-100 border-transparent mt-1"
-                                        value="0" min="0" max="0" required
-                                    >
-                                </div>
 
-                                {{-- Tombol hapus baris --}}
-                                <button type="button" class="remove-sparepart px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600">×</button>
-                            </div>
+                        <div id="sparepart-wrapper">
+                            @forelse($selectedSpareparts as $index => $sparepart)
+                                <div class="sparepart-group flex gap-4 mt-2">
+                                    <select name="spare_part_id[]" class="sparepart-select w-2/3 rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" onchange="updateMaxJumlah(this)" required>
+                                        <option disabled>Pilih suku cadang</option>
+                                        @foreach($spareParts as $part)
+                                            <option 
+                                                value="{{ $part->id }}" 
+                                                data-stock="{{ $part->stock }}"
+                                                {{ $part->id == $sparepart->id ? 'selected' : '' }}>
+                                                {{ $part->name }} (Stok: {{ $part->stock }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+
+                                    <div class="flex flex-col w-1/3">
+                                        <x-input-label for="jumlah" value="Jumlah" />
+                                        <input 
+                                            type="number" 
+                                            name="jumlah[]" 
+                                            class="jumlah-input rounded-xl bg-gray-100 border-transparent mt-1" 
+                                            value="{{ $sparepart->pivot->jumlah ?? 1 }}" 
+                                            min="1" 
+                                            max="{{ $sparepart->stock > 0 ? $sparepart->stock : 1 }}" 
+                                            {{ $sparepart->stock == 0 ? 'disabled' : '' }}
+                                            required
+                                        >
+                                    </div>
+
+                                    <button type="button" class="remove-sparepart px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600">×</button>
+                                </div>
+                            @empty
+                                {{-- Jika kosong, tampilkan 1 input kosong --}}
+                                <div class="sparepart-group flex gap-4 mt-2">
+                                    <select name="spare_part_id[]" class="sparepart-select w-2/3 rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" onchange="updateMaxJumlah(this)" required>
+                                        <option disabled selected>Pilih suku cadang</option>
+                                        @foreach($spareParts as $part)
+                                            <option value="{{ $part->id }}" data-stock="{{ $part->stock }}">
+                                                {{ $part->name }} (Stok: {{ $part->stock }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+
+                                    <div class="flex flex-col w-1/3">
+                                        <x-input-label for="jumlah" value="Jumlah" />
+                                        <input 
+                                            type="number" 
+                                            name="jumlah[]" 
+                                            class="jumlah-input rounded-xl bg-gray-100 border-transparent mt-1" 
+                                            value="1" 
+                                            min="1" 
+                                            max="1" 
+                                            required
+                                        >
+                                    </div>
+
+                                    <button type="button" class="remove-sparepart px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600">×</button>
+                                </div>
+                            @endforelse
                         </div>
 
-                        {{-- Tombol tambah baris --}}
                         <button type="button" onclick="addSparepartInput()" class="mt-3 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
                             + Tambah Suku Cadang
                         </button>

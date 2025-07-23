@@ -44,43 +44,22 @@
                                 <p>Stok: <span class="font-semibold text-gray-800">{{ $item->stock }} unit</span></p>
                             </div>
                         </div>
-
-                {{-- Bagian Tombol (BARU) --}}
-                <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-center space-x-3">
-                    <a href="{{ route('suku-cadang.edit', ['id' => 1]) }}" class="px-4 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        Edit
-                    </a>
-
-                    <form id="delete-form-1" action="#" method="POST" class="inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="button" 
-                                onclick="confirmDelete('delete-form-1')"
-                                class="px-4 py-1.5 text-xs font-medium text-red-600 border border-red-600 rounded-md hover:bg-red-50">
-                            Hapus
-                        </button>
-                    </form>
-                </div>
-            </div>
-            @endfor
-            
                         <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-center space-x-3">
                             <a href="{{ route('suku-cadang.edit', ['id' => $item->id]) }}" class="px-4 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                 Edit
                             </a>
                             
-                            <form action="{{ route('suku-cadang.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                            <form id="delete-form-1" action="{{ route('suku-cadang.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="px-4 py-1.5 text-xs font-medium text-red-600 border border-red-600 rounded-md hover:bg-red-50">
-                                    Delete
+                                <button type="button" onclick="confirmDelete('delete-form-1')" class="px-4 py-1.5 text-xs font-medium text-red-600 border border-red-600 rounded-md hover:bg-red-50">
+                                    Hapus
                                 </button>
                             </form>
                         </div>
-                    </div>
+                    </div>                   
                 @endforeach
             @endif
         </div>
-
     </div>
 </x-app-layout>

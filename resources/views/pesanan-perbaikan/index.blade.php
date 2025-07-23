@@ -1,5 +1,5 @@
 <x-app-layout>
-    @php
+    {{-- @php
         function formatPhoneNumber($phone_number) {
             if (!$phone_number) return '-';
             // Hapus semua karakter bukan angka
@@ -16,7 +16,7 @@
 
             return $result;
         }
-    @endphp
+    @endphp --}}
 
     <div class="p-8">
         {{-- HEADER --}}
@@ -74,20 +74,7 @@
                         <a href="{{ route('pesanan.edit', ['id' => $pesanan->id]) }}" class="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">
                             Edit data
                         </a>
-                        <form action="{{ route('pesanan.destroy', ['id' => $pesanan->id]) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus pesanan ini?')">
-                            @csrf
-                            @method('DELETE')
-                            <form id="delete-form-1" action="#" method="POST" class="inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="button" 
-                                onclick="confirmCancel('delete-form-1')"
-                                class="px-5 py-2 text-sm font-medium text-red-600 border border-red-600 rounded-lg hover:bg-red-50">
-                                    Hapus
-                                </button>
-                        </form>
                     </div>
-                    </form>
                 </div>
             @empty
                 <div class="text-gray-500 text-center py-10">

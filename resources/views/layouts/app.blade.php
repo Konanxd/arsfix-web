@@ -79,5 +79,26 @@
                 })
             }
         </script>
+
+        {{-- SCRIPT UNTUK KONFIRMASI --}}
+        <script>
+            function confirmAction(formId, message = 'Apakah Anda yakin?') {
+                Swal.fire({
+                    title: message,
+                    text: "Aksi ini mungkin tidak dapat dikembalikan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, lanjutkan!',
+                    cancelButtonText: 'Tidak'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById(formId).submit();
+                    }
+                })
+            }
+        </script>
+
     </body>
 </html>

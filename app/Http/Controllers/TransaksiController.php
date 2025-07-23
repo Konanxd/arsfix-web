@@ -42,29 +42,32 @@ class TransaksiController extends Controller
             'repair_id' => 'required|exists:repair_orders,id',
         ]);
 
-        $repairOrder = RepairOrder::with('spareparts')->find($request->repair_id);
+        $repairOrder = RepairOrder::with('spareparts')->findOrFail($request->repair_id);
 
-        if (!$repairOrder) {
-            return redirect()->back()->with('error', 'Pesanan perbaikan tidak ditemukan.');
+        if ($repairOrder->status !== 'Dalam Proses') {
+            return redirect()->back()->with('error', 'Hanya pesanan yang sedang diproses yang bisa diselesaikan.');
         }
 
-        // Hitung total harga spareparts (jumlah * harga tiap sparepart)
-        $totalSparePartCost = 0;
-        foreach ($repairOrder->spareparts as $sparepart) {
-            $totalSparePartCost += $sparepart->price * $sparepart->pivot->jumlah;
-        }
-
-        // Total payment = biaya jasa + total harga sparepart
+        // 1. Hitung total biaya
+        $totalSparePartCost = $repairOrder->spareparts->reduce(function ($carry, $item) {
+            return $carry + ($item->price * $item->pivot->jumlah);
+        }, 0);
         $totalPayment = $repairOrder->estimated_cost + $totalSparePartCost;
 
-        Transaction::create([
-            'repair_id' => $repairOrder->id,
-            'spare_part_cost' => $totalSparePartCost,
-            'service_fee' => $repairOrder->estimated_cost,
-            'total_payment' => $totalPayment,
-        ]);
+        // 2. Gunakan updateOrCreate untuk menghindari error duplikat
+        Transaction::updateOrCreate(
+            ['repair_id' => $repairOrder->id], // Kunci untuk mencari
+            [                                   // Data untuk di-update atau dibuat
+                'total_payment' => $totalPayment,
+                // Anda bisa tambahkan field lain di sini jika perlu
+            ]
+        );
 
-        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil ditambahkan.');
+        // 3. Ubah status pesanan menjadi 'Selesai'
+        $repairOrder->status = 'Selesai';
+        $repairOrder->save();
+
+        return redirect()->route('transaksi.index')->with('success', 'Pesanan telah diselesaikan dan transaksi berhasil dibuat.');
     }
 
     public function cetakStruk($id)
@@ -80,7 +83,7 @@ class TransaksiController extends Controller
         $transaction = Transaction::with(['repairOrder.customer', 'repairOrder.technician', 'repairOrder.spareparts'])->findOrFail($id);
         $repairOrder = $transaction->repairOrder;
 
-        return view('transaksi.detail-transaksi', compact('transaction', 'repairOrder'));
+        return view('transaksi.show', compact('transaction', 'repairOrder'));
     }
 
     public function edit($id)

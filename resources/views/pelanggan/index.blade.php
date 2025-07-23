@@ -1,6 +1,6 @@
 {{-- File: resources/views/dashboard.blade.php --}}
 <x-app-layout>
-    @php
+    {{-- @php
         function formatPhoneNumber($phone_number) {
             if (!$phone_number) return '-';
             // Hapus semua karakter bukan angka
@@ -17,7 +17,7 @@
 
             return $result;
         }
-    @endphp
+    @endphp --}}
     <div class="p-8">
         {{-- HEADER --}}
         <h1 class="text-3xl font-bold text-gray-800">Data Pelanggan</h1>
@@ -55,10 +55,11 @@
                         class="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 flex-shrink-0">
                             Edit data
                         </a>
-                        <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" onsubmit="return confirm('Yakin ingin hapus?')">
+                        <form id="delete-form-1"action="{{ route('customers.destroy', $customer->id) }}" method="POST" onsubmit="return confirm('Yakin ingin hapus?')">
                             @csrf
                             @method('DELETE')
-                            <button type="submit"
+                            <button type="button"
+                                    onclick="confirmDelete('delete-form-1')"
                                     class="px-5 py-2 text-sm font-medium text-red-600 border border-red-600 rounded-lg hover:bg-red-50 flex-shrink-0">
                                 Hapus data
                             </button>
@@ -66,18 +67,6 @@
                     </div>
                 </div>
             @endforeach
-                <div class="flex space-x-3 self-end lg:self-auto">
-                    <a href="{{ route('pelanggan.edit', ['id' => 3]) }}" class="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 flex-shrink-0">Edit data</a>
-                    <form id="delete-form-1" action="#" method="POST" class="inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="button" 
-                                onclick="confirmDelete('delete-form-1')"
-                                class="px-5 py-2 text-sm font-medium text-red-600 border border-red-600 rounded-lg hover:bg-red-50">
-                            Hapus data
-                        </button>
-                    </form>
-                </div>
             </div>
         </div>
     </div>
