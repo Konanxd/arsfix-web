@@ -24,7 +24,7 @@
 
         {{-- SEARCH BAR DAN TOMBOL --}}
         <div class="flex justify-between items-center mt-8">
-            <form action="{{ route('pesanan.index') }}" method="GET" class="w-full max-w-md">
+            <form action="{{ route('pesanan.index') }}" method="GET" class="w-full max-w-3xl">
                 <input
                     type="text"
                     name="search"

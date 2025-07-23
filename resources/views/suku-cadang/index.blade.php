@@ -7,7 +7,7 @@
         <form method="GET" action="{{ route('suku-cadang.index') }}" class="w-full">
             <div class="flex flex-col sm:flex-row justify-between items-center mt-8 space-y-4 sm:space-y-0">
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari data suku cadang"
-                    class="w-full max-w-md px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" name="image">
+                    class="w-full max-w-2xl px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" name="image">
                 
                 <a href="{{ route('suku-cadang.create') }}"
                     class="w-full sm:w-auto inline-flex justify-center items-center px-5 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
