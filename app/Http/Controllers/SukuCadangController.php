@@ -31,22 +31,26 @@ class SukuCadangController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:50', // Sesuaikan dengan 'name' dan panjang 50
-            'price' => 'required|numeric|min:0', // Sesuaikan dengan 'price'
-            'stock' => 'required|integer|min:0', // Sesuaikan dengan 'stock'
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:50',
+        'price' => 'required|numeric|min:0',
+        'stock' => 'required|integer|min:0',
+        'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ]);
 
-        SparePart::create($request->all());
+    $data = $request->only(['name', 'price', 'stock']);
 
-        return redirect()->route('suku-cadang.index')->with('success', 'Data suku cadang berhasil ditambahkan.');
+    if ($request->hasFile('image')) {
+        $filename = time() . '.' . $request->image->extension();
+        $request->image->move(public_path('uploads'), $filename);
+        $data['image'] = 'uploads/' . $filename;
     }
 
-    public function show(SparePart $sukuCadang)
-    {
-        return view('suku-cadang.show', compact('sukuCadang'));
-    }
+    SparePart::create($data);
+
+    return redirect()->route('suku-cadang.index')->with('success', 'Data suku cadang berhasil ditambahkan.');
+}
 
     public function edit($id)
     {
@@ -57,18 +61,30 @@ class SukuCadangController extends Controller
 
 
     public function update(Request $request, $id)
-    {
-        $request->validate([
-            'name' => 'required|string|max:50',
-            'price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:50',
+        'price' => 'required|numeric|min:0',
+        'stock' => 'required|integer|min:0',
+        'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ]);
 
-        $sukuCadang = SparePart::findOrFail($id);
-        $sukuCadang->update($request->all());
+    $sukuCadang = SparePart::findOrFail($id);
+    $data = $request->only(['name', 'price', 'stock']);
 
-        return redirect()->route('suku-cadang.index')->with('success', 'Data berhasil diperbarui.');
+    if ($request->hasFile('image')) {
+        $filename = time() . '.' . $request->image->extension();
+        $request->image->move(public_path('uploads'), $filename);
+        $data['image'] = 'uploads/' . $filename;
     }
+
+    $sukuCadang->update($data);
+
+    return redirect()->route('suku-cadang.index')->with('success', 'Data berhasil diperbarui.');
+}
+
+
+
 
 
     public function destroy($id)

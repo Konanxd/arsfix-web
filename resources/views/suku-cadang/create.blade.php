@@ -49,7 +49,7 @@
                     </div>
 
                     <div x-data="{ fileName: '' }">
-                        <x-input-label for="foto" value="Upload Foto Suku Cadang" />
+                        <x-input-label for="foto" value="Upload Foto Suku Cadang" name="image" />
                         <div class="mt-1 flex items-center justify-center w-full">
                             <label for="foto" class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100">
                                 <div class="flex flex-col items-center justify-center pt-5 pb-6">
@@ -57,7 +57,8 @@
                                     <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Klik untuk upload</span> atau seret file</p>
                                     <p class="text-xs text-gray-500">PNG, JPG, atau WEBP</p>
                                 </div>
-                                <input id="foto" type="file" class="hidden" @change="fileName = $event.target.files[0] ? $event.target.files[0].name : ''">
+                                <input id="foto" name="image" type="file" class="hidden" @change="fileName = $event.target.files[0] ? $event.target.files[0].name : ''">
+
                             </label>
                         </div> 
                         <p x-show="fileName" class="text-sm text-gray-500 mt-2">Nama file: <span x-text="fileName" class="font-semibold"></span></p>

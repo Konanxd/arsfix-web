@@ -70,11 +70,10 @@
 
             {{-- Gambar --}}
             <div>
-                <x-input-label for="foto_baru" value="Foto Suku Cadang Saat Ini" />
+                <input id="foto_baru" name="image" type="file" class="sr-only">
                 <div class="mt-2 flex items-center space-x-4">
-                    <img src="{{ $sukuCadang->image_url ?? 'https://img.gkbcdn.com/p/2016-05-18/uart-ttl-serial-camera-module-640x480-pixels-for-arduino-1572312083423._w500_p1_.jpg' }}" 
-                        alt="Foto Saat Ini" 
-                        class="w-24 h-24 object-contain rounded-md bg-gray-100 p-2 border">
+                    <img src="{{ asset($sukuCadang->image ?? 'images/default.jpg') }}" alt="Foto Saat Ini" class="w-24 h-24 object-contain rounded-md bg-gray-100 p-2 border">
+
                     <div>
                         <label for="foto_baru" class="cursor-pointer text-sm text-blue-600 hover:text-blue-800 font-semibold">
                             Ganti foto

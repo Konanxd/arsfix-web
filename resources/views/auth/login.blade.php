@@ -29,7 +29,7 @@
                     </div>
 
                     <!-- Remember Me -->
-                    <div class="flex items-center justify-between mb-6">
+                    {{-- <div class="flex items-center justify-between mb-6">
                         <label for="remember_me" class="inline-flex items-center">
                             <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
                             <span class="ms-2 text-sm text-gray-600">Ingat saya</span>
@@ -40,7 +40,7 @@
                                 Lupa password?
                             </a>
                         @endif
-                    </div>
+                    </div> --}}
 
                     <!-- Login Button -->
                     <div>
@@ -48,12 +48,12 @@
                             {{ __('Login') }}
                         </x-primary-button>
                     </div>
-                    <div class="text-center mt-6">
+                    {{-- <div class="text-center mt-6">
                     <p class="text-sm text-gray-600">
                         Belum punya akun?
                         <a href="{{ route('register') }}" class="text-blue-600 hover:underline">Register di sini</a>
                     </p>
-                </div>
+                </div> --}}
                 </form>
             </div>
 

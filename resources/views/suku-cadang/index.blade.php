@@ -7,7 +7,7 @@
         <form method="GET" action="{{ route('suku-cadang.index') }}" class="w-full">
             <div class="flex flex-col sm:flex-row justify-between items-center mt-8 space-y-4 sm:space-y-0">
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari data suku cadang"
-                    class="w-full max-w-md px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    class="w-full max-w-md px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" name="image">
                 
                 <a href="{{ route('suku-cadang.create') }}"
                     class="w-full sm:w-auto inline-flex justify-center items-center px-5 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
@@ -60,6 +60,40 @@
                     </div>                   
                 @endforeach
             @endif
+            
+            {{-- Loop untuk menampilkan data dinamis dari $sukuCadang --}}
+            @foreach ($sukuCadang as $item)
+                <div class="bg-white rounded-lg border border-gray-100 p-4 text-left hover:shadow-lg transition-shadow duration-300 flex flex-col">
+                    <div class="flex-grow">
+                        <div class="bg-gray-50 rounded-md p-4">
+                            <img src="{{ asset($item->image ?? 'images/default.jpg') }}" alt="Suku Cadang" class="w-full h-28 object-contain mx-auto">
+
+                        </div>
+                        <div class="mt-4">
+                            <p class="mt-1 font-semibold text-gray-800">{{ $item->name }}</p>
+                        </div>
+                        <div class="mt-2 text-left text-sm text-gray-600">
+                            <p>Harga: <span class="font-semibold text-gray-800">Rp {{ number_format($item->price, 0, ',', '.') }}</span></p>
+                            <p>Stok: <span class="font-semibold text-gray-800">{{ $item->stock }} unit</span></p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-center space-x-3">
+                        <a href="{{ route('suku-cadang.edit', ['id' => $item->id]) }}" class="px-4 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Edit
+                        </a>
+                        
+                        <form action="{{ route('suku-cadang.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="px-4 py-1.5 text-xs font-medium text-red-600 border border-red-600 rounded-md hover:bg-red-50">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            @endforeach
+            
         </div>
     </div>
 </x-app-layout>

@@ -19,6 +19,7 @@ class SparePart extends Model
         'name',
         'price',
         'stock',
+        'image'
     ];
 
     public function repairOrders()
