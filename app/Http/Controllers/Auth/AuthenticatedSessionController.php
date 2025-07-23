@@ -31,7 +31,6 @@ class AuthenticatedSessionController extends Controller
 
     $request->session()->regenerate();
 
-    // 👇 Cek apakah email adalah 'user@admin.com'
     if (Auth::user()->email === 'user@admin.com') {
         return redirect()->route('register'); // arahkan ke halaman register
     }
