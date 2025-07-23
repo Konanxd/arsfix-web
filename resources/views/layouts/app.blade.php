@@ -58,5 +58,26 @@
                 })
             }
         </script>
+
+        {{-- SCRIPT UNTUK KONFIRMASI HAPUS --}}
+        <script>
+            function confirmCancel(formId) {
+                Swal.fire({
+                    title: 'Apakah Anda yakin membatalkan pesanan?',
+                    text: "Data yang dihapus tidak dapat dikembalikan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, batalkan pesanan!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Jika dikonfirmasi, kirim form penghapusan
+                        document.getElementById(formId).submit();
+                    }
+                })
+            }
+        </script>
     </body>
 </html>

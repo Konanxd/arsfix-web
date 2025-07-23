@@ -13,7 +13,7 @@
 
         {{-- DAFTAR PESANAN --}}
         <div class="mt-6 space-y-4">
-
+                        
             {{-- Data Dummy --}}
             <div class="bg-white p-4 rounded-lg shadow-md flex flex-col lg:flex-row lg:items-center lg:justify-between">
                 <a href="{{ route('pesanan.show', ['id' => 1]) }}" class="flex items-center flex-1">
@@ -27,7 +27,7 @@
                         <div class="flex items-center space-x-2 mt-1">
                             <p class="text-sm text-gray-500">01/07/24</p>
                         </div>
-                    </div>
+                    </div>  
                 </a>
 
                 {{-- Aksi tombol --}}
@@ -38,12 +38,17 @@
                     <button class="px-5 py-2 text-sm font-medium text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50">
                         Selesai
                     </button>
-                    <button class="px-5 py-2 text-sm font-medium text-red-600 border border-red-600 rounded-lg hover:bg-red-50">
-                        Batal
-                    </button>
+                    <form id="delete-form-1" action="#" method="POST" class="inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="button" 
+                                onclick="confirmCancel('delete-form-1')"
+                                class="px-5 py-2 text-sm font-medium text-red-600 border border-red-600 rounded-lg hover:bg-red-50">
+                            Batal
+                        </button>
+                    </form>
                 </div>
             </div>
-
         </div>
     </div>
 </x-app-layout>

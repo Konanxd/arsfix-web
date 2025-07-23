@@ -38,9 +38,16 @@
                     <a href="{{ route('suku-cadang.edit', ['id' => 1]) }}" class="px-4 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         Edit
                     </a>
-                    <button class="px-4 py-1.5 text-xs font-medium text-red-600 border border-red-600 rounded-md hover:bg-red-50">
-                        Delete
-                    </button>
+
+                    <form id="delete-form-1" action="#" method="POST" class="inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="button" 
+                                onclick="confirmDelete('delete-form-1')"
+                                class="px-4 py-1.5 text-xs font-medium text-red-600 border border-red-600 rounded-md hover:bg-red-50">
+                            Hapus
+                        </button>
+                    </form>
                 </div>
             </div>
             @endfor
