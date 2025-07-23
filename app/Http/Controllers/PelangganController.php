@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Customers;
 use Illuminate\Http\Request;
 
 class PelangganController extends Controller
@@ -10,9 +10,10 @@ class PelangganController extends Controller
      * Menampilkan daftar pelanggan.
      */
     public function index()
-    {
-        return view('pelanggan.index');
-    }
+{
+    $customers = Customers::all();
+    return view('pelanggan.index', compact('customers'));
+}
 
     /**
      * Menampilkan form untuk membuat pelanggan baru.
@@ -23,8 +24,8 @@ class PelangganController extends Controller
     }
 
     public function edit($id)
-    {
-        // hanya menampilkan view wir.
-        return view('pelanggan.edit');
-    }
+{
+    $customer = Customers::findOrFail($id); // ambil data berdasarkan ID
+    return view('pelanggan.edit', compact('customer')); // kirim ke view
+}
 }
