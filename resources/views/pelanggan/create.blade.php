@@ -44,7 +44,7 @@
                     {{-- Gadget --}}
                     <div>
                         <x-input-label for="handphone" value="Gadget" />
-                        <x-text-input id="handphone" class="block mt-1 w-full rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" type="text" name="handphone" value="{{ old('handphone') }}" required placeholder="Masukan merk handphone" />
+                        <x-text-input id="handphone" class="block mt-1 w-full rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" type="text" name="handphone" value="{{ old('handphone') }}" required placeholder="Masukan gadget" />
                         <x-input-error :messages="$errors->get('handphone')" class="mt-2" />
                     </div>
 

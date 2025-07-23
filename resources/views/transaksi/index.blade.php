@@ -63,7 +63,7 @@
                             </p>
                             <p class="text-sm text-gray-600">
                                 @if($customer)
-                                    0{{ $phoneFormatted }} |
+                                +62 {{ $phoneFormatted }} |
                                 @else
                                     -
                                 @endif

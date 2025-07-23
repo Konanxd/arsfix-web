@@ -33,9 +33,9 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:50',
-            'phone_number' => 'nullable|string|max:15',
-            'handphone' => 'nullable|string|max:15',
+            'name' => 'required|string',
+            'phone_number' => 'nullable|string',
+            'handphone' => 'nullable|string',
         ]);
 
         Customers::create($request->all());
@@ -54,9 +54,9 @@ class CustomerController extends Controller
         $customer = Customers::findOrFail($id);
 
         $request->validate([
-            'name' => 'required|string|max:50',
-            'phone_number' => 'nullable|string|max:15',
-            'handphone' => 'nullable|string|max:15',
+            'name' => 'required|string',
+            'phone_number' => 'nullable|string|max:13',
+            'handphone' => 'nullable|string',
         ]);
 
         $customer->update($request->all());

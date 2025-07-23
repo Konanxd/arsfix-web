@@ -75,7 +75,7 @@
 
                     {{-- Handphone --}}
                     <div>
-                        <x-input-label for="handphone" value="Handphone" />
+                        <x-input-label for="handphone" value="Gadget" />
                         <input type="text" id="handphone" disabled class="block mt-1 w-full rounded-xl bg-gray-100 border-transparent" >
                         <input type="hidden" id="handphone_hidden">
                     </div>

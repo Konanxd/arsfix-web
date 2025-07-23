@@ -68,7 +68,7 @@
             </tr>
             <tr>
                 <td><strong>Tanggal:</strong></td>
-                <td>{{ $transaksi->created_at->format('d/m/Y') }}</td>
+                <td>{{ \Carbon\Carbon::parse($transaksi->created_at)->translatedFormat('d F Y') }}</td>
             </tr>
             <tr>
                 <td><strong>Nama Pelanggan:</strong></td>
@@ -84,18 +84,43 @@
             </tr>
         </table>
 
-        <table class="payment-table">
+        <table class="payment-table w-full text-sm border-collapse">
             <tr>
-                <td>Suku Cadang</td>
-                <td class="text-right">Rp {{ number_format($transaksi->repairOrder->sparepart->price, 0, ',', '.') }}</td>
+                <td class="font-semibold align-top"><strong>Suku Cadang</strong></td>
+                <td>
+                        @foreach($transaksi->repairOrder->spareparts as $sparepart)
+                            <tr class="border-b">
+                                <td class="text-gray-500">
+                                    {{ $sparepart->name }} (x{{ $sparepart->pivot->jumlah ?? 1 }})
+                                </td>
+                                <td class="text-right">
+                                    Rp{{ number_format($sparepart->price * ($sparepart->pivot->jumlah ?? 1), 0, ',', '.') }}
+                                </td>
+                            </tr>
+                        @endforeach
+                </td>
             </tr>
+
             <tr>
-                <td>Biaya Layanan</td>
+                <td><strong>Biaya Layanan</strong></td>
                 <td class="text-right">Rp {{ number_format($transaksi->repairOrder->estimated_cost, 0, ',', '.') }}</td>
             </tr>
+
+            @php
+                $repairOrder = $transaksi->repairOrder;
+                $spareparts = $repairOrder?->spareparts ?? collect();
+
+                $totalSparepartPrice = $spareparts->reduce(function($carry, $item) {
+                    return $carry + ($item->price * ($item->pivot->jumlah ?? 1));
+                }, 0);
+
+                $totalPayment = $totalSparepartPrice + ($repairOrder?->estimated_cost ?? 0);
+            @endphp
             <tr>
-                <td>Total Pembayaran</td>
-                <td class="text-right">Rp {{ number_format($total_payment = $transaksi->repairOrder->estimated_cost + $transaksi ->repairOrder->sparepart->price, 0, ',', '.') }}</td>
+                <tr>
+                    <td class="font-semibold">Total Pembayaran</td>
+                    <td class="text-right">Rp {{ number_format($totalPayment, 0, ',', '.') }}</td>
+                </tr>
             </tr>
         </table>
 

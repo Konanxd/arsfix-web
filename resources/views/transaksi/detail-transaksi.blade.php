@@ -18,19 +18,19 @@
         }
 
         $repairOrder = $transaction->repairOrder;
-                    $customer = $repairOrder?->customer;
-                    $spareparts = $repairOrder?->spareparts ?? collect();
+        $customer = $repairOrder?->customer;
+        $spareparts = $repairOrder?->spareparts ?? collect();
 
-                    // Hitung total harga sparepart (jumlah * price)
-                    $totalSparepartPrice = $spareparts->reduce(function($carry, $item) {
-                        return $carry + ($item->price * ($item->pivot->jumlah ?? 1));
-                    }, 0);
+        // Hitung total harga sparepart (jumlah * price)
+        $totalSparepartPrice = $spareparts->reduce(function($carry, $item) {
+                return $carry + ($item->price * ($item->pivot->jumlah ?? 1));
+        }, 0);
 
-                    // Total pembayaran = total harga sparepart + estimated_cost
-                    $totalPayment = $totalSparepartPrice + ($repairOrder?->estimated_cost ?? 0);
+        // Total pembayaran = total harga sparepart + estimated_cost
+        $totalPayment = $totalSparepartPrice + ($repairOrder?->estimated_cost ?? 0);
 
-                    // Format nomor telepon tanpa +62 dobel
-                    $phoneFormatted = $customer ? formatPhoneNumber($customer->phone_number) : '-';
+        // Format nomor telepon tanpa +62 dobel
+        $phoneFormatted = $customer ? formatPhoneNumber($customer->phone_number) : '-';
     @endphp
 
     <div class="p-8">
