@@ -9,6 +9,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Route; // Tambahkan ini di bagian atas
+
 
 class AuthenticatedSessionController extends Controller
 {
@@ -24,13 +26,20 @@ class AuthenticatedSessionController extends Controller
      * Handle an incoming authentication request.
      */
     public function store(LoginRequest $request): RedirectResponse
-    {
-        $request->authenticate();
+{
+    $request->authenticate();
 
-        $request->session()->regenerate();
+    $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+    // 👇 Cek apakah email adalah 'user@admin.com'
+    if (Auth::user()->email === 'user@admin.com') {
+        return redirect()->route('register'); // arahkan ke halaman register
     }
+
+    // Redirect default (contoh: ke halaman pesanan)
+    return redirect()->intended('/pelanggan');
+}
+
 
     /**
      * Destroy an authenticated session.

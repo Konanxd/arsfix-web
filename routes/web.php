@@ -7,6 +7,7 @@ use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\SukuCadangController;
 use App\Http\Controllers\PesananPerbaikanController;
 use App\Http\Controllers\TransaksiController;
+use Illuminate\Support\Facades\Auth;
 
 
 /*
@@ -26,8 +27,13 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
+    if (Auth::check() && Auth::user()->email === 'hadaya@gmail.com') {
+        return redirect('/')->with('error', 'Akses dashboard ditolak.');
+    }
+
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth'])->name('dashboard');
+
 
 Route::resource('customers', CustomerController::class);
 

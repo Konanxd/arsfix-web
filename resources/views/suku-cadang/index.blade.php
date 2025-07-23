@@ -5,7 +5,7 @@
 
         {{-- SEARCH BAR DAN TOMBOL (SUDAH RESPONSIF) --}}
         <div class="flex flex-col sm:flex-row justify-between items-center mt-8 space-y-4 sm:space-y-0">
-            <input type="text" placeholder="Cari data suku cadang" class="w-full max-w-md px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" placeholder="Cari data suku cadang" class="w-full max-w-md px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" name="image">
             <a href="{{ route('suku-cadang.create') }}" class="w-full sm:w-auto inline-flex justify-center items-center px-5 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
                 + Tambah Suku Cadang
             </a>
@@ -19,8 +19,8 @@
                 <div class="bg-white rounded-lg border border-gray-100 p-4 text-left hover:shadow-lg transition-shadow duration-300 flex flex-col">
                     <div class="flex-grow">
                         <div class="bg-gray-50 rounded-md p-4">
-                            <img src="https://img.gkbcdn.com/p/2016-05-18/uart-ttl-serial-camera-module-640x480-pixels-for-arduino-1572312083423._w500_p1_.jpg" 
-                                alt="Suku Cadang" class="w-full h-28 object-contain mx-auto">
+                            <img src="{{ asset($item->image ?? 'images/default.jpg') }}" alt="Suku Cadang" class="w-full h-28 object-contain mx-auto">
+
                         </div>
                         <div class="mt-4">
                             <p class="mt-1 font-semibold text-gray-800">{{ $item->name }}</p>
