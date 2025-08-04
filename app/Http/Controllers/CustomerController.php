@@ -15,8 +15,7 @@ class CustomerController extends Controller
         ->when($search, function ($query, $search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
-                  ->orWhere('phone_number', 'like', '%' . $search . '%')
-                  ->orWhere('handphone', 'like', '%' . $search . '%');
+                  ->orWhere('phone_number', 'like', '%' . $search . '%');
             });
         })
         ->get();
@@ -35,7 +34,6 @@ class CustomerController extends Controller
         $request->validate([
             'name' => 'required|string',
             'phone_number' => 'nullable|string',
-            'handphone' => 'nullable|string',
         ]);
 
         Customers::create($request->all());
@@ -56,7 +54,7 @@ class CustomerController extends Controller
         $request->validate([
             'name' => 'required|string',
             'phone_number' => 'nullable|string|max:13',
-            'handphone' => 'nullable|string',
+            
         ]);
 
         $customer->update($request->all());

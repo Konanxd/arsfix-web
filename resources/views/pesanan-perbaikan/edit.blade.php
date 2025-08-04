@@ -41,6 +41,13 @@
                     <input type="hidden" name="technician_id" value="{{ $pesananPerbaikan->technician_id }}">
                 </div>
 
+                {{-- Gadget --}}
+                <div>
+                    <x-input-label for="handphone" value="Gadget" />
+                    <input id="handphone" class="block mt-1 w-full rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" type="text" name="handphone" value="{{ $pesananPerbaikan->handphone }}" required />
+                    <x-input-error :messages="$errors->get('handphone')" class="mt-2" />
+                </div>
+
                 {{-- Tanggal Order --}}
                     <div>
                         <x-input-label for="tanggal" value="Tanggal Order" />
@@ -50,6 +57,19 @@
                             type="date"
                             name="order_date"
                             value="{{ now()->format('Y-m-d') }}"
+                        />
+                    </div>
+                
+                {{-- Tanggal Selesai --}}
+                    <div>
+                        <x-input-label for="completion_date" value="Estimasi Tanggal Selesai" />
+                        <input
+                            id="completion_date"
+                            type="date"
+                            name="completion_date"
+                            value="{{ old('completion_date', $pesananPerbaikan->completion_date ?? '') }}"
+                            class="block mt-1 w-full rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500"
+                            required
                         />
                     </div>
 
@@ -143,12 +163,16 @@
                     {{-- Status --}}
                     <div>
                         <x-input-label for="status" value="Status Pesanan" />
-                        <select id="status" name="status" class="block w-full mt-1 bg-gray-100 border-transparent rounded-xl">
-                            <option value="Dalam Proses" {{ $pesananPerbaikan->status == 'Dalam Proses' ? 'selected' : '' }}>Dalam Proses</option>
-                            <option value="Selesai" {{ $pesananPerbaikan->status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
-                            <option value="Batal" {{ $pesananPerbaikan->status == 'Batal' ? 'selected' : '' }}>Batal</option>
-                        </select>
+                        <input
+                            type="text"
+                            id="status"
+                            name="status"
+                            value="Dalam Proses"
+                            readonly
+                            class="block w-full mt-1 bg-gray-100 border-transparent rounded-xl"
+                        />
                     </div>
+
 
                     {{-- Submit --}}
                     <div class="flex justify-end pt-4">
@@ -190,15 +214,33 @@
         const group = selectElement.closest('.sparepart-group');
         const jumlahInput = group.querySelector('.jumlah-input');
         const selectedOption = selectElement.options[selectElement.selectedIndex];
-        const stock = selectedOption.getAttribute('data-stock') || 0;
+        const stock = parseInt(selectedOption.getAttribute('data-stock')) || 0;
+
+        // Set max jumlah jadi 1 (bukan berdasarkan stok)
+        jumlahInput.max = 1;
+
+        // Jika jumlah sekarang lebih dari 1, set ke 1
+        if (parseInt(jumlahInput.value) > 1 || parseInt(jumlahInput.value) < 1) {
+            jumlahInput.value = 1;
+        }
+
+        if (stock === 0) {
+            alert('Stok suku cadang ini kosong, tidak bisa diinputkan.');
+            // Reset pilihan supaya user memilih yang lain
+            selectElement.selectedIndex = 0;
+            jumlahInput.value = 0;
+            jumlahInput.max = 0;
+            jumlahInput.disabled = true;
+            return;
+        }
 
         jumlahInput.max = stock;
+        jumlahInput.disabled = false;
 
         if (parseInt(jumlahInput.value) > stock) {
             jumlahInput.value = stock;
         }
-
-        jumlahInput.disabled = stock == 0;
+        
     }
 
     function addSparepartInput() {
@@ -211,8 +253,10 @@
         const jumlah = newGroup.querySelector('input');
 
         select.selectedIndex = 0;
-        jumlah.value = 0;
-        jumlah.max = 0;
+        jumlah.value = 1;  
+        jumlah.max = 1;    
+        jumlah.min = 1;
+        jumlah.disabled = true;
 
         wrapper.appendChild(newGroup);
     }

@@ -15,6 +15,7 @@ class PesananPerbaikanController extends Controller
     {
         // Mulai query dengan filter status 'Dalam Proses'
         $query = RepairOrder::where('status', 'Dalam Proses');
+        
 
         // Jika ada pencarian, terapkan pada query yang sudah difilter
         if ($request->has('search') && !empty($request->search)) {
@@ -22,6 +23,7 @@ class PesananPerbaikanController extends Controller
             $query->where(function($q) use ($search) {
                 $q->where('description', 'like', '%' . $search . '%')
                 ->orWhere('id', 'like', '%' . $search . '%')
+                ->orWhere('handphone', 'like', '%' . $search . '%')
                 ->orWhereHas('customer', function($subQ) use ($search) {
                     $subQ->where('name', 'like', '%' . $search . '%');
                 });
@@ -30,7 +32,7 @@ class PesananPerbaikanController extends Controller
 
         // Ambil data yang sudah difilter
         $pesananPerbaikan = $query->with(['customer', 'technician'])->latest()->get();
-
+        $pesanan = RepairOrder::all();
         return view('pesanan-perbaikan.index', compact('pesananPerbaikan'));
     }
 
@@ -46,51 +48,69 @@ class PesananPerbaikanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            // validasi input
             'customer_id' => 'required|exists:customers,id',
             'technician_id' => 'required|exists:users,id',
             'order_date' => 'required|date',
-            // 'status' => 'required', // Hapus validasi status
+            'completion_date' => 'required|date|after_or_equal:order_date',
+            'handphone' => 'required|string',
             'description' => 'required|string',
             'estimated_cost' => 'required|numeric',
-            'spare_part_id'   => 'required|array',
-            'spare_part_id.*' => 'exists:spare_parts,id',
-            'jumlah'          => 'required|array',
-            'jumlah.*'        => 'integer|min:1',
+
+            'spare_part_id'   => 'nullable|array',
+            'spare_part_id.*' => 'nullable|exists:spare_parts,id',
+            'jumlah'          => 'nullable|array',
+            'jumlah.*' => 'sometimes|nullable|integer|min:1',
+
         ]);
 
-        // Simpan RepairOrder
         $repairOrder = RepairOrder::create([
-            'customer_id' => $request->customer_id,
-            'technician_id' => $request->technician_id,
-            'order_date' => $request->order_date,
-            'status' => 'Dalam Proses', // Status di-set secara otomatis
-            'description' => $request->description,
-            'estimated_cost' => $request->estimated_cost,
+            'customer_id'     => $request->customer_id,
+            'technician_id'   => $request->technician_id,
+            'order_date'      => $request->order_date,
+            'completion_date' => $request->completion_date,
+            'handphone'       => $request->handphone,
+            'status'          => 'Dalam Proses',
+            'description'     => $request->description,
+            'estimated_cost'  => $request->estimated_cost,
         ]);
 
-        // Loop sparepart dan attach ke repairOrder (pivot table)
-        foreach ($request->spare_part_id as $index => $sparepartId) {
-            $jumlah = $request->jumlah[$index];
-            $sparepart = SparePart::findOrFail($sparepartId);
+        // Proses spare part jika ada
+        $spareParts = $request->input('spare_part_id', []);
+        $jumlahList = $request->input('jumlah', []);
+        $attachData = [];
 
-            if ($sparepart->stock < $jumlah) {
-                // Hapus pesanan yang baru dibuat karena transaksi gagal
-                $repairOrder->delete(); 
-                return redirect()->back()->with('error', "Stok {$sparepart->name} tidak mencukupi.")->withInput();
+        foreach ($spareParts as $index => $sparePartId) {
+            if (!empty($sparePartId) && isset($jumlahList[$index]) && $jumlahList[$index] > 0) {
+                $sparepart = SparePart::findOrFail($sparePartId);
+
+                // Validasi stok cukup
+                if ($sparepart->stock < $jumlahList[$index]) {
+                    return redirect()->back()->with('error', "Stok sparepart {$sparepart->name} tidak mencukupi.")->withInput();
+                }
+
+                // Kurangi stok
+                $sparepart->stock -= $jumlahList[$index];
+                $sparepart->save();
+
+                $attachData[$sparePartId] = ['jumlah' => $jumlahList[$index]];
             }
-
-            $repairOrder->spareparts()->attach($sparepartId, ['jumlah' => $jumlah]);
-
-            // Kurangi stok
-            $sparepart->stock -= $jumlah;
-            $sparepart->save();
         }
 
-        // Redirect ke daftar pesanan perbaikan (bukan pesananperbaikan.index)
+
+        
+
+        foreach ($spareParts as $index => $sparePartId) {
+            if (!empty($sparePartId) && isset($jumlahList[$index]) && $jumlahList[$index] > 0) {
+                $attachData[$sparePartId] = ['jumlah' => $jumlahList[$index]];
+            }
+        }
+
+        if (!empty($attachData)) {
+            $repairOrder->spareparts()->attach($attachData);
+        }
+
         return redirect()->route('pesanan.index')->with('success', 'Pesanan perbaikan berhasil ditambahkan.');
     }
-
 
     public function edit($id)
     {
@@ -117,67 +137,64 @@ class PesananPerbaikanController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'customer_id' => 'required|exists:customers,id',
-            'technician_id' => 'required|exists:users,id',
-            'order_date' => 'required|date',
-            'status' => 'required|in:Dalam Proses,Selesai,Batal',
-            'description' => 'nullable|string',
-            'estimated_cost' => 'required|numeric',
+            'customer_id'     => 'required|exists:customers,id',
+            'technician_id'   => 'required|exists:users,id',
+            'order_date'      => 'required|date',
+            'completion_date' => 'required|date|after_or_equal:order_date',
+            'handphone'       => 'required|string',
+            'description'     => 'nullable|string',
+            'estimated_cost'  => 'required|numeric',
 
-            'spare_part_id' => 'required|array',
-            'spare_part_id.*' => 'exists:spare_parts,id',
-            'jumlah' => 'required|array',
-            'jumlah.*' => 'integer|min:1',
+            'spare_part_id'   => 'nullable|array',
+            'spare_part_id.*' => 'nullable|exists:spare_parts,id',
+            'jumlah'          => 'nullable|array',
+            'jumlah.*' => 'sometimes|nullable|integer|min:1',
+
         ]);
 
         $repairOrder = RepairOrder::with('spareparts')->findOrFail($id);
 
-        // Kembalikan stok sparepart lama dulu supaya stok update dengan benar
-        if ($repairOrder->spareparts && $repairOrder->spareparts->count() > 0) {
-            foreach ($repairOrder->spareparts as $sparepart) {
-                $sparepart->stock += $sparepart->pivot->jumlah ?? 0;
-                $sparepart->save();
-            }
-        }
-
-        $sparepartsData = [];
-        // Loop semua sparepart baru, cek stok dan kurangi stok sesuai jumlah
-        foreach ($request->spare_part_id as $index => $sparepartId) {
-            $jumlah = $request->jumlah[$index] ?? 0;
-            if ($jumlah < 1) {
-                return redirect()->back()->with('error', "Jumlah sparepart harus minimal 1")->withInput();
-            }
-
-            $sparepart = SparePart::findOrFail($sparepartId);
-
-            if ($sparepart->stock < $jumlah) {
-                return redirect()->back()->with('error', "Stok sparepart {$sparepart->name} tidak mencukupi.")->withInput();
-            }
-
-            $sparepart->stock -= $jumlah;
+        // Kembalikan stok spare part lama
+        foreach ($repairOrder->spareparts as $sparepart) {
+            $sparepart->stock += $sparepart->pivot->jumlah ?? 0;
             $sparepart->save();
-
-            $sparepartsData[$sparepartId] = ['jumlah' => $jumlah];
         }
 
-        // Update data repair order utama
+        $spareParts = $request->input('spare_part_id', []);
+        $jumlahList = $request->input('jumlah', []);
+        $sparepartsData = [];
+
+        foreach ($spareParts as $index => $sparePartId) {
+            if (!empty($sparePartId) && isset($jumlahList[$index]) && $jumlahList[$index] > 0) {
+                $sparepart = SparePart::findOrFail($sparePartId);
+
+                if ($sparepart->stock < $jumlahList[$index]) {
+                    return redirect()->back()->with('error', "Stok sparepart {$sparepart->name} tidak mencukupi.")->withInput();
+                }
+
+                $sparepart->stock -= $jumlahList[$index];
+                $sparepart->save();
+
+                $sparepartsData[$sparePartId] = ['jumlah' => $jumlahList[$index]];
+            }
+        }
+
         $repairOrder->update([
-            'customer_id' => $request->customer_id,
-            'technician_id' => $request->technician_id,
-            'order_date' => $request->order_date,
-            'status' => $request->status,
-            'description' => $request->description,
-            'estimated_cost' => $request->estimated_cost,
+            'customer_id'     => $request->customer_id,
+            'technician_id'   => $request->technician_id,
+            'order_date'      => $request->order_date,
+            'completion_date' => $request->completion_date,
+            'handphone'       => $request->handphone,
+            'status'          => $request->status,
+            'description'     => $request->description,
+            'estimated_cost'  => $request->estimated_cost,
         ]);
 
-        // Sync sparepart dengan jumlah baru
+        // Sync hanya jika ada spare part valid
         $repairOrder->spareparts()->sync($sparepartsData);
 
         return redirect()->route('pesanan.index')->with('success', 'Data pesanan perbaikan berhasil diperbarui!');
     }
-
-
-
 
     public function show($id)
     {

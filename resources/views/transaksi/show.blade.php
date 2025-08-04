@@ -53,7 +53,7 @@
                 </div>
                 <div class="text-right">
                     <p class="text-sm text-blue-600 font-medium">Tanggal Transaksi</p>
-                    <p class="text-base text-gray-800 font-semibold">{{ \Carbon\Carbon::parse($transaction->created_at)->translatedFormat('d F Y') }}</p>
+                    <p class="text-base text-gray-800 font-semibold">{{ \Carbon\Carbon::parse($repairOrder->order_date)->translatedFormat('d F Y') }}</p>
                 </div>
             </div>
 
@@ -77,8 +77,12 @@
                     </div>
                     <div class="flex justify-between border-b pb-3">
                         <p class="text-gray-500">Gadget</p>
-                        <p class="text-gray-800 font-medium">{{ $repairOrder->customer->handphone }}</p>
+                        <p class="text-gray-800 font-medium">{{ $repairOrder->handphone }}</p>
                     </div>
+                    <div class="flex justify-between border-b pb-3">
+                        <p class="text-gray-500">Estimasi Tanggal Selesai</p>
+                        <p class="text-gray-800 font-medium">{{ \Carbon\Carbon::parse($repairOrder->completion_date)->translatedFormat('d F Y') }}</p>
+                </div>
                 </div>
             </div>
 

@@ -54,7 +54,7 @@
                                 {{ $pesanan->customer->name ?? '-' }}
                             </p>
                             <p class="text-sm text-gray-600">
-                                +62 {{ formatPhoneNumber($pesanan->customer->phone_number) ?? '-' }} | {{ $pesanan->customer->handphone }} | {{ $pesanan->description }} 
+                                +62 {{ formatPhoneNumber($pesanan->customer->phone_number) ?? '-' }} | {{ $pesanan->handphone }} | {{ $pesanan->description }} 
                             </p>
                             <div class="flex items-center space-x-2 mt-1">
                                 <p class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($pesanan->order_date)->translatedFormat('d F Y') }}</p>

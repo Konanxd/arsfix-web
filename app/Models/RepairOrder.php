@@ -22,12 +22,12 @@ class RepairOrder extends Model
         'id',
         'customer_id',
         'technician_id',
-        // 'sparepart_id',
         'order_date',
+        'completion_date',
+        'handphone',
         'status',
         'description',
         'estimated_cost',
-        // 'jumlah',
     ];
 
     public function customer()

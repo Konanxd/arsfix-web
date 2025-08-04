@@ -30,19 +30,18 @@
                     <x-input-label for="id_pelanggan" value="ID Pelanggan" />
                     <div class="flex gap-4 mt-1">
                         <select id="id_pelanggan" name="customer_id"
-                            class="w-1/2 rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500"
+                            class="w-full mt-1 rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500"
                             onchange="updateDataPelanggan()">
-                            <option disabled selected>Pilih ID pelanggan</option>
+                            <option disabled selected>Pilih Pelanggan</option>
                             @foreach($customers as $customer)
                                 <option value="{{ $customer->id }}"
                                     data-nama="{{ $customer->name }}"
                                     data-telepon="{{ $customer->phone_number }}"  {{-- Pastikan field phone_number di model Customer --}}
-                                    data-handphone="{{ $customer->handphone }}">
-                                    {{ $customer->id }} - {{ $customer->name }}
+                                    >{{ $customer->name }}
                                 </option>
                             @endforeach
                         </select>
-                        <x-text-input type="text" class="w-1/2 rounded-xl bg-gray-100 border-transparent"
+                        <x-text-input type="hidden"
                             id="nama_pelanggan" disabled />
                     </div>
                 </div>
@@ -51,15 +50,15 @@
                     <div>
                         <x-input-label for="id_teknisi" value="ID Teknisi" />
                         <div class="flex gap-4 mt-1">
-                            <select id="id_teknisi" name="technician_id" class="w-1/2 rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" onchange="updateNamaTeknisi()">
-                                <option disabled selected>Pilih ID teknisi</option>
+                            <select id="id_teknisi" name="technician_id" class="w-full mt-1 rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" onchange="updateNamaTeknisi()">
+                                <option disabled selected>Pilih Teknisi</option>
                                 @foreach($technicians as $technician)
                                     <option value="{{ $technician->id }}" data-nama="{{ $technician->name }}">
-                                        {{ $technician->id }}
+                                        {{ $technician->name }}
                                     </option>
                                 @endforeach
                             </select>
-                            <x-text-input type="text" class="w-1/2 rounded-xl bg-gray-100 border-transparent" id="nama_teknisi" disabled />
+                            <x-text-input type="hidden"id="nama_teknisi" disabled />
                         </div>
                     </div>
 
@@ -73,11 +72,11 @@
                         </div>
                     </div>
 
-                    {{-- Handphone --}}
+                    {{-- Gadget --}}
                     <div>
                         <x-input-label for="handphone" value="Gadget" />
-                        <input type="text" id="handphone" disabled class="block mt-1 w-full rounded-xl bg-gray-100 border-transparent" >
-                        <input type="hidden" id="handphone_hidden">
+                        <input id="handphone" class="block mt-1 w-full rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" type="text" name="handphone" value="{{ old('handphone') }}" required placeholder="Masukan gadget" />
+                        <x-input-error :messages="$errors->get('handphone')" class="mt-2" />
                     </div>
 
                     {{-- Tanggal Order --}}
@@ -92,6 +91,20 @@
                         />
                     </div>
 
+                    {{-- Estimasi Tanggal Selesai --}}
+                    <div>
+                        <x-input-label for="completion_date" value="Estimasi Tanggal Selesai" />
+                        <input
+                            id="completion_date"
+                            type="date"
+                            name="completion_date"
+                            value="{{ old('completion_date', $pesananPerbaikan->completion_date ?? '') }}"
+                            class="block mt-1 w-full rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500"
+                            required
+                        />
+                    </div>
+
+
                     {{-- Deskripsi Kerusakan --}}
                     <div>
                         <x-input-label for="deskripsi" value="Deskripsi Kerusakan" />
@@ -101,60 +114,23 @@
                     {{-- Suku Cadang --}}
                     <div>
                         <x-input-label value="Suku Cadang" />
-
-                        {{-- Wrapper untuk seluruh grup sparepart --}}
                         <div id="sparepart-wrapper">
-                            {{-- Baris pertama (default) --}}
-                            <div class="sparepart-group flex gap-4 mt-2">
-                                <select name="spare_part_id[]" class="sparepart-select w-2/3 rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" onchange="updateMaxJumlah(this)" required>
-                                    <option disabled selected>Pilih suku cadang</option>
-                                    @foreach($spareParts as $part)
-                                        <option value="{{ $part->id }}" data-stock="{{ $part->stock }}">
-                                            {{ $part->name }} (Stok: {{ $part->stock }})
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <div class="flex flex-col w-1/3">
-                                    <x-input-label for="jumlah" value="Jumlah" />
-                                    <input 
-                                        type="number"
-                                        name="jumlah[]"
-                                        class="jumlah-input rounded-xl bg-gray-100 border-transparent mt-1"
-                                        value="0" min="0" max="0" required
-                                    >
-                                </div>
-
-                                {{-- Tombol hapus baris --}}
-                                <button type="button" class="remove-sparepart px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600">×</button>
-                            </div>
+                            {{-- kosong awalnya --}}
                         </div>
-
-                        {{-- Tombol tambah baris --}}
-                        <button type="button" onclick="addSparepartInput()" class="mt-3 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                        <button type="button" onclick="addSparepartInput()" 
+                            class="mt-3 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
                             + Tambah Suku Cadang
                         </button>
                     </div>
-
-
 
                     {{-- Estimasi Biaya --}}
                     <div>
                         <x-input-label for="biaya" value="Estimasi Biaya Layanan Perbaikan" />
                         <div class="flex mt-1">
                             <span class="inline-flex items-center px-4 rounded-l-xl bg-gray-100 border border-r-0 border-transparent text-gray-500">Rp.</span>
-                            <input id="biaya" type="number" name="estimated_cost" class="w-full rounded-r-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" placeholder="0">
+                            <input id="biaya" min="0" type="number" name="estimated_cost" class="w-full rounded-r-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" placeholder="0">
                         </div>
                     </div>
-
-                    {{-- Status --}}
-                    {{-- <div>
-                        <x-input-label for="status" value="Status Pesanan" />
-                        <select id="status" name="status" class="block w-full mt-1 bg-gray-100 border-transparent rounded-xl">
-                            <option value="Dalam Proses">Dalam Proses</option>
-                            <option value="Selesai">Selesai</option>
-                            <option value="Batal">Batal</option>
-                        </select>
-                    </div> --}}
 
                     {{-- Submit --}}
                     <div class="flex justify-end pt-4">
@@ -166,6 +142,32 @@
             </form>
         </div>
     </div>
+
+    <!-- Template sparepart baris -->
+    <template id="sparepart-template">
+        <div class="sparepart-group flex gap-4 mt-2">
+            <select name="spare_part_id[]" class="sparepart-select w-2/3 rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" onchange="updateMaxJumlah(this)">
+                <option disabled selected>Pilih suku cadang</option>
+                @foreach($spareParts as $part)
+                    <option value="{{ $part->id }}" data-stock="{{ $part->stock }}" {{ $part->stock < 2 ? 'disabled' : '' }}>
+                        {{ $part->name }} (Stok: {{ $part->stock }})
+                    </option>
+                @endforeach
+            </select>
+            <div class="flex flex-col w-1/3">
+                <x-input-label for="jumlah" value="Jumlah" />
+                <input 
+                    type="number" 
+                    name="jumlah[]" 
+                    class="jumlah-input rounded-xl bg-gray-100 border-transparent mt-1"
+                    value="1" min="1" max="1" 
+                    disabled
+                >
+            </div>
+            <button type="button" class="remove-sparepart px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600">×</button>
+        </div>
+    </template>
+
 
 <script>
     function updateNamaTeknisi() {
@@ -181,44 +183,70 @@
 
         const nama = selectedOption.getAttribute('data-nama') || '';
         const telepon = selectedOption.getAttribute('data-telepon') || '';
-        const handphone = selectedOption.getAttribute('data-handphone') || '';
 
         document.getElementById('nama_pelanggan').value = nama;
         document.getElementById('telepon').value = telepon;
-        document.getElementById('handphone').value = handphone;
 
         // Update hidden inputs supaya data terkirim saat submit
         document.getElementById('telepon_hidden').value = telepon;
-        document.getElementById('handphone_hidden').value = handphone;
     }
 
     function updateMaxJumlah(selectElement) {
         const group = selectElement.closest('.sparepart-group');
         const jumlahInput = group.querySelector('.jumlah-input');
         const selectedOption = selectElement.options[selectElement.selectedIndex];
-        const stock = selectedOption.getAttribute('data-stock') || 0;
+        const stock = parseInt(selectedOption.getAttribute('data-stock')) || 0;
 
-        jumlahInput.max = stock;
-
-        if (parseInt(jumlahInput.value) > stock) {
-            jumlahInput.value = stock;
+        if (stock < 2) {
+            alert('Stok suku cadang kurang dari 2, tidak bisa dipakai.');
+            // reset pilihan ke default
+            selectEl.selectedIndex = 0;
+            jumlahInput.value = '';
+            jumlahInput.disabled = true;
+            return;
         }
 
-        jumlahInput.disabled = stock == 0;
+        // jika valid stok >= 2, enable input jumlah dan set max 1
+        jumlahInput.disabled = false;
+        jumlahInput.value = 1;
+        jumlahInput.min = 1;
+        jumlahInput.max = 1;
+
+        // Jika nilai sekarang di input jumlah lebih dari stok, set ke stok
+        if (parseInt(jumlahInput.value) > stock || parseInt(jumlahInput.value) < 1) {
+            jumlahInput.value = 1;
+        }
     }
+
 
     function addSparepartInput() {
         const wrapper = document.getElementById('sparepart-wrapper');
-        const firstGroup = wrapper.querySelector('.sparepart-group');
-        const newGroup = firstGroup.cloneNode(true);
+        const template = document.getElementById('sparepart-template');
 
-        // Reset nilai select dan input
+        if (!template) {
+            console.error('Template tidak ditemukan');
+            return;
+        }
+
+        const newGroup = template.content.firstElementChild.cloneNode(true);
+
+        // reset select dan jumlah input
         const select = newGroup.querySelector('select');
-        const jumlah = newGroup.querySelector('input');
-
+        const jumlah = newGroup.querySelector('input.jumlah-input');
         select.selectedIndex = 0;
-        jumlah.value = 0;
-        jumlah.max = 0;
+        jumlah.value = '';
+        jumlah.disabled = true;
+
+        // Pasang event onchange
+        select.addEventListener('change', function() {
+            updateMaxJumlah(select);
+        });
+
+        // Pasang event hapus baris
+        const btnRemove = newGroup.querySelector('.remove-sparepart');
+        btnRemove.addEventListener('click', function() {
+            newGroup.remove();
+        });
 
         wrapper.appendChild(newGroup);
     }
@@ -226,13 +254,8 @@
     // Hapus baris
     document.addEventListener('click', function (e) {
         if (e.target.classList.contains('remove-sparepart')) {
-            const groups = document.querySelectorAll('.sparepart-group');
-            if (groups.length > 1) {
-                e.target.closest('.sparepart-group').remove();
-            } else {
-                alert('Minimal satu suku cadang diperlukan.');
-            }
-        }
+        e.target.closest('.sparepart-group').remove();
+    }
     });
 </script>  
 </x-app-layout>
