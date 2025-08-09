@@ -59,7 +59,7 @@
                         class="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 flex-shrink-0">
                         Edit data
                     </a>
-                    <form id="delete-form-{{ $customer->id }}" action="{{ route('customers.destroy', $customer->id) }}" method="POST" onsubmit="return confirm('Yakin ingin hapus?')">
+                    <form id="delete-form-{{ $customer->id }}" action="{{ route('pelanggan.destroy', $customer->id) }}" method="POST" onsubmit="return confirm('Yakin ingin hapus?')">
                         @csrf
                         @method('DELETE')
                         <button type="button"
