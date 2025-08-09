@@ -67,8 +67,12 @@
                 <td>{{ $transaksi->id }}</td>
             </tr>
             <tr>
-                <td><strong>Tanggal:</strong></td>
-                <td>{{ \Carbon\Carbon::parse($transaksi->created_at)->translatedFormat('d F Y') }}</td>
+                <td><strong>Tanggal Order:</strong></td>
+                <td>{{ \Carbon\Carbon::parse($transaksi->repairOrder->order_date)->translatedFormat('d F Y') }}</td>
+            </tr>
+            <tr>
+                <td><strong>Tanggal Estimasi Selesai:</strong></td>
+                <td>{{ \Carbon\Carbon::parse($transaksi->repairOrder->completion_date)->translatedFormat('d F Y') }}</td>
             </tr>
             <tr>
                 <td><strong>Nama Pelanggan:</strong></td>

@@ -49,19 +49,23 @@
 
             <div class="grid md:grid-cols-2 gap-6">
                 <div>
+                    <p class="text-sm text-gray-500 font-medium">Tanggal Order</p>
+                    <p class="text-base text-gray-800 font-semibold">{{ \Carbon\Carbon::parse($pesananPerbaikan->order_date)->translatedFormat('d F Y') }}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500 font-medium">Estimasi Tanggal Selesai</p>
+                    <p class="text-base text-gray-800 font-semibold">{{ \Carbon\Carbon::parse($pesananPerbaikan->completion_date)->translatedFormat('d F Y') }}</p>
+                </div>
+                <div>
                     <p class="text-sm text-gray-500 font-medium">No. Telepon</p>
                     <p class="text-base text-gray-800 font-semibold">
                        +62 {{ formatPhoneNumber($pesananPerbaikan->customer->phone_number) ?? '-' }}
                     </p>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500 font-medium">Tanggal Order</p>
-                    <p class="text-base text-gray-800 font-semibold">{{ \Carbon\Carbon::parse($pesananPerbaikan->order_date)->translatedFormat('d F Y') }}</p>
-                </div>
-                <div>
                     <p class="text-sm text-gray-500 font-medium">Gadget</p>
                     <p class="text-base text-gray-800 font-semibold">
-                        {{ $pesananPerbaikan->customer->handphone ?? '-' }}
+                        {{ $pesananPerbaikan->handphone ?? '-' }}
                     </p>
                 </div>
                 <div>
@@ -82,11 +86,14 @@
             <div>
                 <p class="text-sm text-gray-500 font-medium">Suku Cadang Digunakan</p>
                 <ul class="list-disc list-inside text-gray-800 font-semibold">
-                    @foreach ($pesananPerbaikan->spareparts as $sparepart)
+                    @forelse ($pesananPerbaikan->spareparts as $sparepart)
                         <li>{{ $sparepart->name }} (Jumlah: {{ $sparepart->pivot->jumlah }})</li>
-                    @endforeach
+                    @empty
+                        <li>-</li>
+                    @endforelse
                 </ul>
             </div>
+
 
             <div class="grid md:grid-cols-2 gap-6">
                 <div>

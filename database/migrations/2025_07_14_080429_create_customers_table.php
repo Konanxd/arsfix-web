@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id(); // manual ID
-            $table->string('name', 50);
+            $table->string('name');
             $table->string('phone_number', 12);
-            $table->string('handphone', 20);
             $table->timestamps();
         });
 

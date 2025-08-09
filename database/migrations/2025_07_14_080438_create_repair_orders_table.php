@@ -11,12 +11,12 @@ return new class extends Migration
         Schema::create('repair_orders', function (Blueprint $table) {
             $table->id(); 
             $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
-            
             // Tambahkan kolom technician_id lebih dulu
             $table->foreignId('technician_id')->constrained('users')->onDelete('cascade');
-
             // $table->foreignId('sparepart_id')->constrained('spare_parts')->onDelete('cascade');
             $table->date('order_date');
+            $table->date('completion_date');
+            $table->string('handphone', 255);
             $table->enum('status',['Dalam Proses', 'Selesai', 'Batal']);
             $table->longText('description')->nullable();
             $table->integer('estimated_cost');

@@ -84,9 +84,6 @@ class SukuCadangController extends Controller
     }
 
 
-
-
-
     public function destroy($id)
     {
         $sukuCadang = SparePart::findOrFail($id);

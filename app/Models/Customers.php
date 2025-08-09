@@ -17,7 +17,6 @@ class Customers extends Model
         'id',
         'name',
         'phone_number',
-        'handphone',
     ];
 
     // Relasi ke repair orders

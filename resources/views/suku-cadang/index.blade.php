@@ -47,13 +47,14 @@
                                 Edit
                             </a>
                             
-                            <form id="delete-form-1" action="{{ route('suku-cadang.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                            <form id="delete-form-{{ $item->id }}" action="{{ route('suku-cadang.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" onclick="confirmDelete('delete-form-1')" class="px-4 py-1.5 text-xs font-medium text-red-600 border border-red-600 rounded-md hover:bg-red-50">
+                                <button type="button" onclick="confirmDelete('delete-form-{{ $item->id }}')" class="px-4 py-1.5 text-xs font-medium text-red-600 border border-red-600 rounded-md hover:bg-red-50">
                                     Hapus
                                 </button>
                             </form>
+
                         </div>
                     </div>                   
                 @endforeach

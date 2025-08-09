@@ -55,13 +55,7 @@
                         <x-input-error :messages="$errors->get('phone_number')" class="mt-2" />
                     </div>
 
-                    <div>
-                        <x-input-label for="handphone" value="Handphone" />
-                        <x-text-input id="handphone"
-                                      class="block mt-1 w-full rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500"
-                                      type="text" name="handphone" value="{{ old('handphone', $customer->handphone) }}" required />
-                        <x-input-error :messages="$errors->get('handphone')" class="mt-2" />
-                    </div>
+                    
 
                     <div class="flex justify-end pt-4">
                         <button type="submit"
