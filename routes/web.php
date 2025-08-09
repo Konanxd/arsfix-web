@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\CustomerController;
 
 use Illuminate\Support\Facades\Route;
@@ -35,15 +36,19 @@ Route::get('/dashboard', function () {
 })->middleware(['auth'])->name('dashboard');
 
 
-Route::resource('customers', CustomerController::class);
 
 Route::middleware('auth')->group(function () {
 
     // Pelanggan
-    Route::get('/pelanggan', [PelangganController::class, 'index'])->name('pelanggan.index');
-    Route::get('/pelanggan/create', [PelangganController::class, 'create'])->name('pelanggan.create');
-    Route::get('/pelanggan/{id}/edit', [PelangganController::class, 'edit'])->name('pelanggan.edit');
-    
+    Route::get('/pelanggan', [CustomerController::class, 'index'])->name('pelanggan.index');
+    Route::get('/pelanggan/create', [CustomerController::class, 'create'])->name('pelanggan.create');
+    Route::post('/pelanggan/create', [CustomerController::class, 'store'])->name('pelanggan.store');
+    Route::get('/pelanggan/{id}/edit', [CustomerController::class, 'edit'])->name('pelanggan.edit');
+    Route::put('/pelanggan/{id}/edit', [CustomerController::class, 'update'])->name('pelanggan.update');
+    Route::delete('/pelanggan/{id}/delete', [CustomerController::class, 'destroy'])->name('pelanggan.destroy');
+    // Route::resource('pelanggan', CustomerController::class);
+
+
     Route::get('/suku-cadang', [SukuCadangController::class, 'index'])->name('suku-cadang.index');
     Route::get('/suku-cadang/create', [SukuCadangController::class, 'create'])->name('suku-cadang.create');
     Route::get('/suku-cadang/{id}/edit', [SukuCadangController::class, 'edit'])->name('suku-cadang.edit');
@@ -70,18 +75,17 @@ Route::middleware('auth')->group(function () {
 
     // Transaksi
     Route::prefix('transaksi')->group(function () {
-    Route::get('/', [TransaksiController::class, 'index'])->name('transaksi.index');
-    Route::get('/create', [TransaksiController::class, 'create'])->name('transaksi.create');
-    // Route::get('/transaksi/create', [TransaksiController::class, 'create'])->name('transaksi.create');
-    Route::post('/store', [TransaksiController::class, 'store'])->name('transaksi.store');
-    Route::get('/{id}', [TransaksiController::class, 'show'])->name('transaksi.show');
-    Route::get('/{id}/edit', [TransaksiController::class, 'edit'])->name('transaksi.edit');
-    // Route::get('/{id}', [TransaksiController::class, 'show'])->name('transaksi.detail');
-    Route::put('/{id}', [TransaksiController::class, 'update'])->name('transaksi.update');
-    Route::delete('/{id}', [TransaksiController::class, 'destroy'])->name('transaksi.destroy');
-    Route::get('/transaksi/{id}/struk', [TransaksiController::class, 'cetakStruk'])->name('transaksi.struk');
-
-});
+        Route::get('/', [TransaksiController::class, 'index'])->name('transaksi.index');
+        Route::get('/create', [TransaksiController::class, 'create'])->name('transaksi.create');
+        // Route::get('/transaksi/create', [TransaksiController::class, 'create'])->name('transaksi.create');
+        Route::post('/store', [TransaksiController::class, 'store'])->name('transaksi.store');
+        Route::get('/{id}', [TransaksiController::class, 'show'])->name('transaksi.show');
+        Route::get('/{id}/edit', [TransaksiController::class, 'edit'])->name('transaksi.edit');
+        // Route::get('/{id}', [TransaksiController::class, 'show'])->name('transaksi.detail');
+        Route::put('/{id}', [TransaksiController::class, 'update'])->name('transaksi.update');
+        Route::delete('/{id}', [TransaksiController::class, 'destroy'])->name('transaksi.destroy');
+        Route::get('/transaksi/{id}/struk', [TransaksiController::class, 'cetakStruk'])->name('transaksi.struk');
+    });
 
 
 
@@ -93,4 +97,4 @@ Route::middleware('auth')->group(function () {
 
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

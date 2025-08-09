@@ -8,20 +8,20 @@ use Illuminate\Http\Request;
 class CustomerController extends Controller
 {
     public function index(Request $request)
-{
-    $search = $request->input('search');
+    {
+        $search = $request->input('search');
 
-    $customers = Customers::query()
-        ->when($search, function ($query, $search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', '%' . $search . '%')
-                  ->orWhere('phone_number', 'like', '%' . $search . '%');
-            });
-        })
-        ->get();
+        $customers = Customers::query()
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%')
+                        ->orWhere('phone_number', 'like', '%' . $search . '%');
+                });
+            })
+            ->get();
 
-    return view('pelanggan.index', compact('customers', 'search'));
-}
+        return view('pelanggan.index', compact('customers', 'search'));
+    }
 
 
     public function create()
@@ -54,7 +54,7 @@ class CustomerController extends Controller
         $request->validate([
             'name' => 'required|string',
             'phone_number' => 'nullable|string|max:13',
-            
+
         ]);
 
         $customer->update($request->all());
@@ -67,7 +67,6 @@ class CustomerController extends Controller
         $customer = Customers::findOrFail($id);
         $customer->delete();
 
-        return redirect()->route('customers.index')->with('success', 'Data customer berhasil dihapus.');
+        return redirect()->route('pelanggan.index')->with('success', 'Data customer berhasil dihapus.');
     }
 }
-
