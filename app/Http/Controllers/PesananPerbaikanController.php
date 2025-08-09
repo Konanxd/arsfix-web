@@ -15,18 +15,18 @@ class PesananPerbaikanController extends Controller
     {
         // Mulai query dengan filter status 'Dalam Proses'
         $query = RepairOrder::where('status', 'Dalam Proses');
-        
+
 
         // Jika ada pencarian, terapkan pada query yang sudah difilter
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('description', 'like', '%' . $search . '%')
-                ->orWhere('id', 'like', '%' . $search . '%')
-                ->orWhere('handphone', 'like', '%' . $search . '%')
-                ->orWhereHas('customer', function($subQ) use ($search) {
-                    $subQ->where('name', 'like', '%' . $search . '%');
-                });
+                    ->orWhere('id', 'like', '%' . $search . '%')
+                    ->orWhere('handphone', 'like', '%' . $search . '%')
+                    ->orWhereHas('customer', function ($subQ) use ($search) {
+                        $subQ->where('name', 'like', '%' . $search . '%');
+                    });
             });
         }
 
@@ -39,7 +39,7 @@ class PesananPerbaikanController extends Controller
     public function create()
     {
         $customers = Customers::all();
-        $technicians = User::all();
+        $technicians = User::where('is_admin', '=', '0')->get();
         $spareParts = SparePart::all();
 
         return view('pesanan-perbaikan.create', compact('customers', 'technicians', 'spareParts'));
@@ -97,7 +97,7 @@ class PesananPerbaikanController extends Controller
         }
 
 
-        
+
 
         foreach ($spareParts as $index => $sparePartId) {
             if (!empty($sparePartId) && isset($jumlahList[$index]) && $jumlahList[$index] > 0) {
@@ -121,16 +121,15 @@ class PesananPerbaikanController extends Controller
 
         // Ambil spareparts dengan pivot 'jumlah' dan urut berdasarkan waktu pivot dibuat (terbaru dulu)
         $selectedSpareparts = $pesananPerbaikan->spareparts()
-        ->withPivot('jumlah', 'created_at')
-        ->orderBy('pivot_created_at', 'desc')
-        ->get();
+            ->withPivot('jumlah', 'created_at')
+            ->orderBy('pivot_created_at', 'desc')
+            ->get();
 
         return view('pesanan-perbaikan.edit', [
-        'pesananPerbaikan' => $pesananPerbaikan,
-        'spareParts' => SparePart::all(),
-        'selectedSpareparts' => $selectedSpareparts,
+            'pesananPerbaikan' => $pesananPerbaikan,
+            'spareParts' => SparePart::all(),
+            'selectedSpareparts' => $selectedSpareparts,
         ]);
-
     }
 
 
@@ -249,7 +248,7 @@ class PesananPerbaikanController extends Controller
         // 3. Ubah status pesanan
         $repairOrder->status = 'Batal';
         $repairOrder->save();
-        
+
         // 4. Update transaksi yang sudah ada (jika ada) menjadi Rp 0
         // Asumsi: satu repair order hanya punya satu transaksi
         $transaction = Transaction::where('repair_id', $repairOrder->id)->first();
@@ -257,13 +256,13 @@ class PesananPerbaikanController extends Controller
             $transaction->total_payment = 0;
             $transaction->save();
         } else {
-             // Jika belum ada transaksi, buat baru dengan status batal
-             Transaction::create([
+            // Jika belum ada transaksi, buat baru dengan status batal
+            Transaction::create([
                 'repair_id' => $repairOrder->id,
                 'total_payment' => 0,
             ]);
         }
-        
+
         // 5. Redirect ke halaman transaksi
         return redirect()->route('transaksi.index')->with('success', 'Pesanan #' . $repairOrder->id . ' telah dibatalkan.');
     }
