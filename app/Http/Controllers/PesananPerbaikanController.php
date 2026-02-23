@@ -97,14 +97,6 @@ class PesananPerbaikanController extends Controller
         }
 
 
-
-
-        foreach ($spareParts as $index => $sparePartId) {
-            if (!empty($sparePartId) && isset($jumlahList[$index]) && $jumlahList[$index] > 0) {
-                $attachData[$sparePartId] = ['jumlah' => $jumlahList[$index]];
-            }
-        }
-
         if (!empty($attachData)) {
             $repairOrder->spareparts()->attach($attachData);
         }

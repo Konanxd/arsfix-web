@@ -38,7 +38,7 @@
         <div class="mt-6 space-y-4">
             @forelse ($pesananPerbaikan as $pesanan)
             <div
-                class="bg-white p-4 rounded-lg shadow-md flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                class="bg-white p-4 rounded-lg shadow-md flex flex-col lg:flex-row lg:items-center lg:justify-between cursor-pointer hover:shadow-xl transition-shadow duration-300">
                 <a href="{{ route('pesanan.show', $pesanan->id) }}" class="flex items-center flex-1">
                     <div class="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center mr-4">
                         <svg class="text-gray-300" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -53,7 +53,7 @@
                             {{ $pesanan->customer->name ?? '-' }}
                         </p>
                         <p class="text-sm text-gray-600">
-                            +62 {{ formatPhoneNumber($pesanan->customer->phone_number) ?? '-' }} | {{ $pesanan->handphone }} | {{ $pesanan->description }}
+                            +62 {{ ltrim($pesanan->customer->phone_number, '0') ?? '-' }} | {{ $pesanan->handphone }} | {{ $pesanan->description }}
                         </p>
                         <div class="flex items-center space-x-2 mt-1">
                             <p class="text-sm text-gray-500">
@@ -81,10 +81,13 @@
                 </div>
             </div>
             @empty
-            <div class="text-gray-500 text-center py-10">
-                <p>Tidak ada data pesanan perbaikan yang cocok dengan pencarian
-                    "<strong>{{ request('search') }}</strong>".</p>
-            </div>
+                <div class="text-gray-500 text-center py-10 bg-gray-50 rounded-lg border border-dashed border-gray-200">
+                    @if(request('search'))
+                        <p>Tidak ada data pesanan perbaikan yang cocok dengan pencarian "<strong>{{ request('search') }}</strong>".</p>
+                    @else
+                        <p>Belum ada data pesanan perbaikan yang tersedia saat ini.</p>
+                    @endif
+                </div>
             @endforelse
         </div>
     </div>

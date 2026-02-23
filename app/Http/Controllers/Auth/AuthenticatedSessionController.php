@@ -26,18 +26,18 @@ class AuthenticatedSessionController extends Controller
      * Handle an incoming authentication request.
      */
     public function store(LoginRequest $request): RedirectResponse
-{
-    $request->authenticate();
+    {
+        $request->authenticate();
 
-    $request->session()->regenerate();
+        $request->session()->regenerate();
 
-    if (Auth::user()->email === 'user@admin.com') {
-        return redirect()->route('register'); // arahkan ke halaman register
+        if (Auth::user()->email === 'admin@gmail.com') {
+            return redirect()->route('register'); // arahkan ke halaman register
+        }
+
+        // Redirect default (contoh: ke halaman pesanan)
+        return redirect()->intended('/pelanggan');
     }
-
-    // Redirect default (contoh: ke halaman pesanan)
-    return redirect()->intended('/pelanggan');
-}
 
 
     /**

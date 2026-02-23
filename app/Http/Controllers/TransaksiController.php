@@ -93,24 +93,6 @@ class TransaksiController extends Controller
         return view('transaksi.edit', compact('transaksi', 'repairOrders'));
     }
 
-    public function detail($id)
-    {
-        $transaction = Transaction::with(['repairOrder.customer', 'repairOrder.technician', 'repairOrder.spareparts'])
-            ->findOrFail($id);
-
-        // Ambil repair order
-        $repairOrder = $transaction->repairOrder;
-
-        // Loop spareparts dan ambil data dari pivot
-        foreach ($repairOrder->spareparts as $sparepart) {
-            echo "Nama Sparepart: " . $sparepart->name . "<br>";
-            echo "Harga: Rp " . number_format($sparepart->price, 0, ',', '.') . "<br>";
-            echo "Jumlah di pivot: " . $sparepart->pivot->jumlah . "<br><br>";
-        }
-
-        return view('transaksi.detail', compact('transaction'));
-    }
-
 
     public function update(Request $request, $id)
     {

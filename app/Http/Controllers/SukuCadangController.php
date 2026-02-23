@@ -9,22 +9,21 @@ class SukuCadangController extends Controller
 {
     public function index(Request $request)
     {
-        $query = SparePart::query();
+        $query = \App\Models\SparePart::query();
 
         if ($request->has('search')) {
             $search = $request->search;
-
             $query->where('name', 'like', "%$search%");
         }
 
-        $sukuCadang = $query->latest()->get();
-        $sukuCadang = $query->orderBy('id', 'desc')->get(); // Terbaru dulu
+        // UBAH BAGIAN INI: Gunakan paginate(5) alih-alih get()
+        // withQueryString() digunakan agar keyword pencarian tidak hilang saat pindah halaman
+        $sukuCadang = $query->orderBy('id')->paginate(5)->withQueryString(); 
 
         return view('suku-cadang.index', compact('sukuCadang'));
     }
 
     
-
      public function create()
     {
         return view('suku-cadang.create');
@@ -36,7 +35,7 @@ class SukuCadangController extends Controller
         'name' => 'required|string|max:50',
         'price' => 'required|numeric|min:0',
         'stock' => 'required|integer|min:0',
-        'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'image' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
     ]);
 
     $data = $request->only(['name', 'price', 'stock']);
@@ -66,7 +65,7 @@ class SukuCadangController extends Controller
             'name' => 'required|string|max:50',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
         ]);
 
         $sukuCadang = SparePart::findOrFail($id);

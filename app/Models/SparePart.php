@@ -11,8 +11,8 @@ class SparePart extends Model
 
     protected $table = 'spare_parts';
     protected $primaryKey = 'id';
-    public $incrementing = false;
-    protected $keyType = 'string';
+    // public $incrementing = false;
+    // protected $keyType = 'string';
 
     protected $fillable = [
         'id',

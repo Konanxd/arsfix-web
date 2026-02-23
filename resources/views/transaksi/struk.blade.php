@@ -90,20 +90,18 @@
 
         <table class="payment-table w-full text-sm border-collapse">
             <tr>
-                <td class="font-semibold align-top"><strong>Suku Cadang</strong></td>
-                <td>
-                        @foreach($transaksi->repairOrder->spareparts as $sparepart)
-                            <tr class="border-b">
-                                <td class="text-gray-500">
-                                    {{ $sparepart->name }} (x{{ $sparepart->pivot->jumlah ?? 1 }})
-                                </td>
-                                <td class="text-right">
-                                    Rp{{ number_format($sparepart->price * ($sparepart->pivot->jumlah ?? 1), 0, ',', '.') }}
-                                </td>
-                            </tr>
-                        @endforeach
-                </td>
+                <td colspan="2" class="font-semibold align-top"><strong>Suku Cadang:</strong></td>
             </tr>
+            @foreach($transaksi->repairOrder->spareparts as $sparepart)
+                <tr class="border-b">
+                    <td class="text-gray-500" style="padding-left: 20px;">
+                        - {{ $sparepart->name }} (x{{ $sparepart->pivot->jumlah ?? 1 }})
+                    </td>
+                    <td class="text-right">
+                        Rp{{ number_format($sparepart->price * ($sparepart->pivot->jumlah ?? 1), 0, ',', '.') }}
+                    </td>
+                </tr>
+            @endforeach
 
             <tr>
                 <td><strong>Biaya Layanan</strong></td>
@@ -113,18 +111,17 @@
             @php
                 $repairOrder = $transaksi->repairOrder;
                 $spareparts = $repairOrder?->spareparts ?? collect();
-
                 $totalSparepartPrice = $spareparts->reduce(function($carry, $item) {
                     return $carry + ($item->price * ($item->pivot->jumlah ?? 1));
                 }, 0);
-
                 $totalPayment = $totalSparepartPrice + ($repairOrder?->estimated_cost ?? 0);
             @endphp
+
             <tr>
-                <tr>
-                    <td class="font-semibold">Total Pembayaran</td>
-                    <td class="text-right">Rp {{ number_format($totalPayment, 0, ',', '.') }}</td>
-                </tr>
+                <td class="font-semibold" style="border-top: 2px solid #333; padding-top: 10px;">Total Pembayaran</td>
+                <td class="text-right" style="border-top: 2px solid #333; padding-top: 10px;">
+                    <strong>Rp {{ number_format($totalPayment, 0, ',', '.') }}</strong>
+                </td>
             </tr>
         </table>
 

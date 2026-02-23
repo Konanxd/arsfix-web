@@ -81,44 +81,94 @@
                     </div>
 
                     {{-- Suku Cadang --}}
+                    {{-- Suku Cadang --}}
                     <div>
-                        <x-input-label value="Suku Cadang" />
+                        <div class="flex justify-between items-center mb-2">
+                            <x-input-label value="Suku Cadang & Jumlah" />
+                        </div>
 
-                        <div id="sparepart-wrapper">
+                        <div id="sparepart-wrapper" class="space-y-3">
                             @forelse($selectedSpareparts as $index => $sparepart)
-                                <div class="sparepart-group flex gap-4 mt-2">
-                                    <select name="spare_part_id[]" class="sparepart-select w-2/3 rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" onchange="updateMaxJumlah(this)" required>
-                                        <option disabled>Pilih suku cadang</option>
-                                        @foreach($spareParts as $part)
-                                            <option 
-                                                value="{{ $part->id }}" 
-                                                data-stock="{{ $part->stock }}"
-                                                {{ $part->id == $sparepart->id ? 'selected' : '' }}>
-                                                {{ $part->name }} (Stok: {{ $part->stock }})
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                <div class="sparepart-group flex items-center gap-3">
+                                    {{-- Dropdown Nama Suku Cadang --}}
+                                    <div class="flex-1">
+                                        <select name="spare_part_id[]" class="sparepart-select w-full rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500 text-sm" onchange="updateMaxJumlah(this)" required>
+                                            <option disabled>Pilih suku cadang</option>
+                                            @foreach($spareParts as $part)
+                                                <option 
+                                                    value="{{ $part->id }}" 
+                                                    data-stock="{{ $part->stock }}"
+                                                    {{ $part->id == $sparepart->id ? 'selected' : '' }}>
+                                                    {{ $part->name }} (Stok: {{ $part->stock }})
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
 
-                                    <div class="flex flex-col w-1/3">
-                                        <x-input-label for="jumlah" value="Jumlah" />
+                                    {{-- Input Jumlah --}}
+                                    <div class="w-24">
                                         <input 
                                             type="number" 
                                             name="jumlah[]" 
-                                            class="jumlah-input rounded-xl bg-gray-100 border-transparent mt-1" 
+                                            class="jumlah-input w-full rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500 text-center text-sm" 
                                             value="{{ $sparepart->pivot->jumlah ?? 1 }}" 
                                             min="1" 
                                             max="{{ $sparepart->stock > 0 ? $sparepart->stock : 1 }}" 
                                             {{ $sparepart->stock == 0 ? 'disabled' : '' }}
+                                            placeholder="Qty"
                                             required
                                         >
                                     </div>
 
-                                    <button type="button" class="remove-sparepart px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600">×</button>
+                                    {{-- Tombol Hapus (Icon SVG yang Clean) --}}
+                                    <button type="button" class="remove-sparepart flex items-center justify-center w-11 h-11 bg-red-50 text-red-500 rounded-xl hover:bg-red-100 transition-colors focus:outline-none">
+                                        <svg class="w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    </button>
                                 </div>
                             @empty
-                                {{-- Jika kosong, tampilkan 1 input kosong --}}
-                                <div class="sparepart-group flex gap-4 mt-2">
-                                    <select name="spare_part_id[]" class="sparepart-select w-2/3 rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500" onchange="updateMaxJumlah(this)" required>
+                                {{-- Jika kosong, tampilkan 1 baris input --}}
+                                <div class="sparepart-group flex items-center gap-3">
+                                    <div class="flex-1">
+                                        <select name="spare_part_id[]" class="sparepart-select w-full rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500 text-sm" onchange="updateMaxJumlah(this)" required>
+                                            <option disabled selected>Pilih suku cadang</option>
+                                            @foreach($spareParts as $part)
+                                                <option value="{{ $part->id }}" data-stock="{{ $part->stock }}">
+                                                    {{ $part->name }} (Stok: {{ $part->stock }})
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="w-24">
+                                        <input 
+                                            type="number" 
+                                            name="jumlah[]" 
+                                            class="jumlah-input w-full rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500 text-center text-sm" 
+                                            value="1" 
+                                            min="1" 
+                                            max="1" 
+                                            placeholder="Qty"
+                                            required
+                                        >
+                                    </div>
+
+                                    <button type="button" class="remove-sparepart flex items-center justify-center w-11 h-11 bg-red-50 text-red-500 rounded-xl hover:bg-red-100 transition-colors focus:outline-none">
+                                        <svg class="w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    </button>
+                                </div>
+                            @endforelse
+                        </div>
+
+                        {{-- Tombol Tambah yang Lebih Elegan --}}
+                        <button type="button" onclick="addSparepartInput()" class="mt-4 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors inline-flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            Tambah Baris Suku Cadang
+                        </button>
+
+                        <template id="sparepart-template">
+                            <div class="sparepart-group flex items-center gap-3 mt-3">
+                                <div class="flex-1">
+                                    <select name="spare_part_id[]" class="sparepart-select w-full rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500 text-sm" onchange="updateMaxJumlah(this)" required>
                                         <option disabled selected>Pilih suku cadang</option>
                                         @foreach($spareParts as $part)
                                             <option value="{{ $part->id }}" data-stock="{{ $part->stock }}">
@@ -126,28 +176,15 @@
                                             </option>
                                         @endforeach
                                     </select>
-
-                                    <div class="flex flex-col w-1/3">
-                                        <x-input-label for="jumlah" value="Jumlah" />
-                                        <input 
-                                            type="number" 
-                                            name="jumlah[]" 
-                                            class="jumlah-input rounded-xl bg-gray-100 border-transparent mt-1" 
-                                            value="1" 
-                                            min="1" 
-                                            max="1" 
-                                            required
-                                        >
-                                    </div>
-
-                                    <button type="button" class="remove-sparepart px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600">×</button>
                                 </div>
-                            @endforelse
-                        </div>
-
-                        <button type="button" onclick="addSparepartInput()" class="mt-3 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-                            + Tambah Suku Cadang
-                        </button>
+                                <div class="w-24">
+                                    <input type="number" name="jumlah[]" class="jumlah-input w-full rounded-xl bg-gray-100 border-transparent focus:ring-2 focus:ring-blue-500 text-center text-sm" value="1" min="1" max="1" placeholder="Qty" required>
+                                </div>
+                                <button type="button" class="remove-sparepart flex items-center justify-center w-11 h-11 bg-red-50 text-red-500 rounded-xl hover:bg-red-100 transition-colors focus:outline-none">
+                                    <svg class="w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                </button>
+                            </div>
+                        </template>
                     </div>
 
 
@@ -175,8 +212,12 @@
 
 
                     {{-- Submit --}}
-                    <div class="flex justify-end pt-4">
-                        <button type="submit" class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    {{-- Submit & Batal --}}
+                    <div class="flex justify-end pt-4 space-x-3">
+                        <a href="{{ route('pesanan.index') }}" class="inline-flex justify-center py-3 px-6 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Batal
+                        </a>
+                        <button type="submit" class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                             Simpan Perubahan
                         </button>
                     </div>
@@ -245,31 +286,20 @@
 
     function addSparepartInput() {
         const wrapper = document.getElementById('sparepart-wrapper');
-        const firstGroup = wrapper.querySelector('.sparepart-group');
-        const newGroup = firstGroup.cloneNode(true);
-
-        // Reset nilai select dan input
-        const select = newGroup.querySelector('select');
-        const jumlah = newGroup.querySelector('input');
-
-        select.selectedIndex = 0;
-        jumlah.value = 1;  
-        jumlah.max = 1;    
-        jumlah.min = 1;
-        jumlah.disabled = true;
-
+        const template = document.getElementById('sparepart-template');
+        
+        // Mengkloning isi dari dalam tag <template>
+        const newGroup = template.content.cloneNode(true);
+        
+        // Memasukkan hasil kloningan ke dalam wrapper
         wrapper.appendChild(newGroup);
     }
 
     // Hapus baris
     document.addEventListener('click', function (e) {
         if (e.target.classList.contains('remove-sparepart')) {
-            const groups = document.querySelectorAll('.sparepart-group');
-            if (groups.length > 1) {
-                e.target.closest('.sparepart-group').remove();
-            } else {
-                alert('Minimal satu suku cadang diperlukan.');
-            }
+            // Langsung hapus elemen tanpa perlu mengecek jumlah minimal
+            e.target.closest('.sparepart-group').remove();
         }
     });
 </script>

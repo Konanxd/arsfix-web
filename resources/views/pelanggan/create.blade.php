@@ -25,7 +25,6 @@
                 @csrf
                 <div class="space-y-6">
 
-
                     {{-- Nama --}}
                     <div>
                         <x-input-label for="name" value="Nama Customer" />

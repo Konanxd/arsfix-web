@@ -2,7 +2,7 @@
     <div class="w-screen h-screen mx-auto bg-white rounded-2xl shadow-lg overflow-hidden grid grid-cols-1 md:grid-cols-2">
         <!-- Left: Register Form -->
         <div class="p-10 mb-auto mt-auto mr-10 ml-10">
-            <h2 class="text-3xl font-bold mb-8 text-center">Register</h2>
+            <h2 class="text-3xl font-bold mb-8 text-center">Register Akun Teknisi</h2>
 
             <form method="POST" action="{{ route('register') }}">
                 @csrf

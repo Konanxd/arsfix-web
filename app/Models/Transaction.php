@@ -14,8 +14,8 @@ class Transaction extends Model
 
     protected $fillable = [
         'repair_id',
-        'spare_part_cost',
-        'service_fee',
+        // 'spare_part_cost',
+        // 'service_fee',
         'total_payment',
     ];
 

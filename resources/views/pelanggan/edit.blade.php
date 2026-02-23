@@ -26,7 +26,7 @@
 
         {{-- FORM CARD --}}
         <div class="mt-8 bg-white p-8 rounded-lg shadow-md">
-            <form method="POST" action="{{ route('pelanggan.update', $customer->id) }}">
+            <form method="POST" action="{{ route('pelanggan.edit', $customer->id) }}">
                 @csrf
                 @method('PUT')
                 <div class="space-y-6">

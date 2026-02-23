@@ -41,7 +41,7 @@
                                 @if($isCanceled)
                                     Pesanan ini telah dibatalkan.
                                 @else
-                                    Rp {{ number_format($transaction->total_payment, 0, ',', '.') }} | {{ $repairOrder->customer->handphone ?? '-' }}
+                                    Rp {{ number_format($transaction->total_payment, 0, ',', '.') }} | {{ $repairOrder->handphone ?? '-' }}
                                 @endif
                             </p>
                             <div class="flex items-center space-x-2 mt-1">
